@@ -20,16 +20,14 @@ app.get("/", (req, res) => {
 
 import productRoutes from "./routes/product.route.js";
 import adminRoutes from "./routes/admin.routes.js";
+import orderRoutes from "./routes/order.routes.js";
+import staticsRoutes from "./routes/statics.routes.js";
+
 app.use(productRoutes);
 app.use(adminRoutes);
-// import courseRoutes from "./routes/course.route.js";
-// import paymentRoutes from "./routes/payment.route.js";
+app.use(orderRoutes);
+app.use(staticsRoutes);
 
-
-
-// app.use(studentRoutes);
-// app.use(courseRoutes);
-// app.use(paymentRoutes);
 
 // app.get("/", (req, res) => {
 //   res.status(200).send("Hello, Shorif Art Backend!");

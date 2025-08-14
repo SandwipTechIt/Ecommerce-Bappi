@@ -142,20 +142,17 @@ export const deleteProduct = async (req, res) => {
 
 export const getAllProducts = async (req, res) => {
     try {
-        const products = await Product.find().sort({ createdAt: -1 });
+        const products = await Product.find().sort({ createdAt: -1 }).select("-images -__v -variants -categories");
         
         // Add full image URLs to response
         const baseUrl = `${req.protocol}://${req.get('host')}`;
         const productsWithImageUrls = products.map(product => ({
             ...product.toObject(),
             primaryImage: getImageUrl(product.primaryImage, baseUrl),
-            images: product.images.map(img => getImageUrl(img, baseUrl))
+            // images: product.images.map(img => getImageUrl(img, baseUrl))
         }));
 
-        res.status(200).json({
-            success: true,
-            data: productsWithImageUrls
-        });
+        res.status(200).json(productsWithImageUrls);
 
     } catch (error) {
         console.error('Error fetching products:', error);
@@ -164,6 +161,81 @@ export const getAllProducts = async (req, res) => {
             message: 'Failed to fetch products',
             error: error.message
         });
+    }
+};
+
+export const updateProduct = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, description, price, discount, variants, status, imagesToDelete } = req.body;
+
+        const product = await Product.findById(id);
+        if (!product) {
+            if (req.files) await cleanupUploadedFiles(req.files);
+            return res.status(404).json({ success: false, message: 'Product not found' });
+        }
+
+        // 1. Handle image deletions
+        const parsedImagesToDelete = imagesToDelete ? JSON.parse(imagesToDelete) : [];
+        if (parsedImagesToDelete.length > 0) {
+            const filenamesToDelete = parsedImagesToDelete.map(url => url.split('/').pop());
+            await deleteMultipleImages(filenamesToDelete);
+
+            // Remove from product model
+            if (filenamesToDelete.includes(product.primaryImage)) {
+                product.primaryImage = null;
+            }
+            product.images = product.images.filter(img => !filenamesToDelete.includes(img));
+        }
+
+        // 2. Handle new image uploads
+        if (req.files) {
+            // New primary image
+            if (req.files.primaryImage && req.files.primaryImage[0]) {
+                // If there was an old primary image, delete it
+                if (product.primaryImage) {
+                    await deleteMultipleImages([product.primaryImage]);
+                }
+                product.primaryImage = req.files.primaryImage[0].filename;
+            }
+            // New additional images
+            if (req.files.images && req.files.images.length > 0) {
+                const newImageFilenames = req.files.images.map(file => file.filename);
+                product.images.push(...newImageFilenames);
+            }
+        }
+
+        // 3. Update other product data
+        product.name = name || product.name;
+        product.description = description || product.description;
+        product.price = price ? parseFloat(price) : product.price;
+        product.discount = discount ? parseFloat(discount) : product.discount;
+        product.status = status || product.status;
+        if (variants) {
+            product.variants = typeof variants === 'string' ? JSON.parse(variants) : variants;
+        }
+
+        // Save the updated product
+        const updatedProduct = await product.save();
+
+        // Prepare response
+        const baseUrl = `${req.protocol}://${req.get('host')}`;
+        const responseProduct = {
+            ...updatedProduct.toObject(),
+            primaryImage: getImageUrl(updatedProduct.primaryImage, baseUrl),
+            images: updatedProduct.images.map(img => getImageUrl(img, baseUrl))
+        };
+
+        res.status(200).json({
+            success: true,
+            message: 'Product updated successfully',
+            data: responseProduct
+        });
+
+    } catch (error) {
+        console.error('Error updating product:', error);
+        if (req.files) await cleanupUploadedFiles(req.files);
+        res.status(500).json({ success: false, message: 'Failed to update product', error: error.message });
     }
 };
 

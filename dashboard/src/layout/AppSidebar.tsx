@@ -5,14 +5,14 @@ import SidebarWidget from "./SidebarWidget";
 
 type NavItem = {
   name: string;
-  icon: string; // Changed from React.ReactNode to string for FontAwesome class names
+  icon: string;
   path?: string;
   subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
 };
 
 const navItems: NavItem[] = [
   {
-    icon: "fas fa-th", // FontAwesome icon class for GridIcon
+    icon: "fas fa-th",
     name: "Dashboard",
     path: "/",
   },
@@ -21,7 +21,7 @@ const navItems: NavItem[] = [
     icon: "fas fa-box",
     subItems: [
       { name: "Add Product", path: "/addProduct" },
-      { name: "All Product", path: "/products" },
+      { name: "All Product", path: "/allProducts" },
     ],
   },
   {
@@ -31,14 +31,6 @@ const navItems: NavItem[] = [
       { name: "All Order", path: "/orders" },
     ],
   },
-  {
-    name: "Category",
-    icon: "fas fa-list",
-    subItems: [
-      { name: "Add Category", path: "/addCategory" },
-      { name: "All Category", path: "/categories" },
-    ],
-  }
 ];
 
 const othersItems: NavItem[] = [

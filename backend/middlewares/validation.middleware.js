@@ -33,20 +33,20 @@ export const validateProductData = async (req, res, next) => {
             errors.push('Product description must not exceed 2000 characters');
         }
 
-        if (discount) {
-            const parsedDiscount = parseFloat(discount);
-            if (isNaN(parsedDiscount) || parsedDiscount < 0 || parsedDiscount > 100) {
-                errors.push('Discount must be a number between 0 and 100');
-            }
-        }
+        // if (discount) {
+        //     const parsedDiscount = parseFloat(discount);
+        //     if (isNaN(parsedDiscount) || parsedDiscount < 0 || parsedDiscount > 100) {
+        //         errors.push('Discount must be a number between 0 and 100');
+        //     }
+        // }
 
-        if (categories && categories.trim().length > 0) {
-            // Basic ObjectId format validation (24 hex characters)
-            const objectIdRegex = /^[0-9a-fA-F]{24}$/;
-            if (!objectIdRegex.test(categories.trim())) {
-                errors.push('Categories must be a valid ObjectId');
-            }
-        }
+        // if (categories && categories.trim().length > 0) {
+        //     // Basic ObjectId format validation (24 hex characters)
+        //     const objectIdRegex = /^[0-9a-fA-F]{24}$/;
+        //     if (!objectIdRegex.test(categories.trim())) {
+        //         errors.push('Categories must be a valid ObjectId');
+        //     }
+        // }
 
         if (variants) {
             try {
@@ -68,9 +68,9 @@ export const validateProductData = async (req, res, next) => {
             }
         }
 
-        if (status && !['active', 'inactive', 'draft', 'archived'].includes(status)) {
-            errors.push('Status must be one of: active, inactive, draft, archived');
-        }
+        // if (status && !['active', 'inactive', 'draft', 'archived'].includes(status)) {
+        //     errors.push('Status must be one of: active, inactive, draft, archived');
+        // }
 
         // If there are validation errors, clean up uploaded files and return error
         if (errors.length > 0) {

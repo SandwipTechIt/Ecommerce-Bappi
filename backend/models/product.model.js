@@ -7,9 +7,8 @@ const ProductSchema = new mongoose.Schema({
     slug: { type: String, unique: true, index: true },
     description: String,
     // categories: { type: mongoose.Schema.Types.ObjectId, ref: 'categories', index: true },
-    categories: { type: mongoose.Schema.Types.ObjectId, index: true },
     price: { type: Number, required: true, min: 0 },
-    discount: { type: Number, default: 0, min: 0 },
+    // discount: { type: Number, default: 0, min: 0 },
     variants: [{
         size: Number,
         stock: { type: Boolean, default: true }
@@ -24,8 +23,6 @@ const ProductSchema = new mongoose.Schema({
     }],
     status: {
         type: String,
-        enum: ['active', 'inactive', 'draft', 'archived'],
-        default: 'draft'
     },
 }, { timestamps: true });
 
@@ -57,5 +54,5 @@ ProductSchema.pre('save', async function (next) {
 
 // Create text index for search
 ProductSchema.index({ name: 'text', description: 'text' });
-
+ProductSchema.index({ slug: 'text' });
 export default mongoose.model('Product', ProductSchema);

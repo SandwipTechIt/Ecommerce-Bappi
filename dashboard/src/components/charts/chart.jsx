@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import ReactApexChart from "react-apexcharts";
 
-const ApexChart = () => {
+const ApexChart = ({ monthlyOrders }) => {
   const [state, setState] = useState({
-    series: [{ name: "Money Received", data: [] }],
+    series: [{ name: "Orders", data: [] }],
     options: {
       chart: {
         height: 350,
@@ -12,7 +12,7 @@ const ApexChart = () => {
         zoom: { enabled: false },
       },
       title: {
-        text: "Money Received - Last 12 Months",
+        text: "Orders Received - Last 12 Months",
         align: "center",
         style: {
           fontSize: "18px",
@@ -24,7 +24,7 @@ const ApexChart = () => {
       stroke: { curve: "smooth" },
       xaxis: {
         type: "category",
-        categories: [],
+        categories: monthlyOrders.map((order) => order.month),
       },
       tooltip: {
         x: {
@@ -33,7 +33,7 @@ const ApexChart = () => {
       },
       yaxis: {
         labels: {
-          formatter: (value) => `৳ ${value.toLocaleString()}`,
+          formatter: (value) => value.toLocaleString(),
         },
       },
       grid: {
@@ -62,23 +62,8 @@ const ApexChart = () => {
   });
 
   useEffect(() => {
-    // Generate last 12 months labels
-    const today = new Date();
-    const months = [];
-
-    for (let i = 11; i >= 0; i--) {
-      const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
-      const formattedMonth = date.toLocaleDateString("en-US", {
-        month: "short",
-        year: "numeric",
-      });
-      months.push(formattedMonth);
-    }
-
-    // Dummy data for the last 12 months
-    const dummyData = [
-      3200, 1600, 3200, 1600, 3200, 1600, 3200, 1600, 3200, 1600, 3200, 1600,
-    ];
+    const months = monthlyOrders.map((order) => order.month);
+    const dummyData = monthlyOrders.map((order) => order.count);
 
     setState((prev) => ({
       ...prev,
