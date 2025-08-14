@@ -1,9 +1,7 @@
-import { useTheme } from "../../context/ThemeContext";
-import Chart from "../../components/charts/chart";
-import Widget from "../../components/ui/widget";
+import Chart from "../components/charts/chart";
+import Widget from "../components/ui/widget";
 
 export default function Home() {
-  const { theme } = useTheme();
 
   return (
     <div className="home-container">

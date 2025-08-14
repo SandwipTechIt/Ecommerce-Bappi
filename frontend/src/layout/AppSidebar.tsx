@@ -38,11 +38,6 @@ const navItems: NavItem[] = [
       { name: "Add Category", path: "/addCategory" },
       { name: "All Category", path: "/categories" },
     ],
-  },
-  {
-    icon: "fas fa-user-circle",
-    name: "User Profile",
-    path: "/profile",
   }
 ];
 
@@ -51,8 +46,8 @@ const othersItems: NavItem[] = [
     icon: "fas fa-plug",
     name: "Authentication",
     subItems: [
-      { name: "Sign In", path: "/signin" },
-      { name: "Sign Up", path: "/signup" },
+      { name: "Profile", path: "/profile" },
+      {name: "SignOut", path: "/signOut"}
     ],
   },
 ];
@@ -249,7 +244,7 @@ const AppSidebar: React.FC = () => {
           }`}
       >
         {
-          isExpanded && isHovered ? (
+          !isExpanded && !isHovered ? (
            <></>
           ) : (
             <Link to="/" className="text-2xl font-semibold text-gray-800 dark:text-white/90">

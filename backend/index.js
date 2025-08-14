@@ -19,7 +19,9 @@ app.get("/", (req, res) => {
 });
 
 import productRoutes from "./routes/product.route.js";
+import adminRoutes from "./routes/admin.routes.js";
 app.use(productRoutes);
+app.use(adminRoutes);
 // import courseRoutes from "./routes/course.route.js";
 // import paymentRoutes from "./routes/payment.route.js";
 

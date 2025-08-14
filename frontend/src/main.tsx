@@ -6,6 +6,8 @@ import App from "./App.jsx";
 import { AppWrapper } from "./components/common/PageMeta.tsx";
 import { ThemeProvider } from "./context/ThemeContext.tsx";
 import BG from "./context/backgroundContext";
+import AuthProvider from "./context/authContext";
+
 // 1️⃣ Create the client once
 
 const queryClient = new QueryClient({
@@ -19,14 +21,16 @@ const queryClient = new QueryClient({
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <BG>
+    <AuthProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
           <AppWrapper>
-            <App />
+            <BG>
+              <App />
+            </BG>
           </AppWrapper>
-        </BG>
-      </ThemeProvider>
-    </QueryClientProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </AuthProvider>
   </StrictMode>
 );
