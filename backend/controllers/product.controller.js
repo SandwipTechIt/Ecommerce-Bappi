@@ -142,7 +142,7 @@ export const deleteProduct = async (req, res) => {
 
 export const getAllProducts = async (req, res) => {
     try {
-        const products = await Product.find().sort({ createdAt: -1 }).select("-images -__v -variants -categories");
+        const products = await Product.find().sort({ createdAt: -1 }).select("-images -__v -variants -categories -updatedAt");
         
         // Add full image URLs to response
         const baseUrl = `${req.protocol}://${req.get('host')}`;
