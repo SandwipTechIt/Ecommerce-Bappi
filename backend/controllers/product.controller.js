@@ -36,7 +36,7 @@ export const createProduct = async (req, res) => {
             categories,
             price: parseFloat(price),
             discount: discount ? parseFloat(discount) : 0,
-            status: status || 'draft'
+            status: status
         };
 
         // Handle variants if provided
@@ -163,6 +163,29 @@ export const getAllProducts = async (req, res) => {
         });
     }
 };
+export const getAllProductsWithDetails = async (req, res) => {
+    try {
+        const products = await Product.find().sort({ createdAt: -1 }).select("-__v -updatedAt");
+        
+        // Add full image URLs to response
+        const baseUrl = `${req.protocol}://${req.get('host')}`;
+        const productsWithImageUrls = products.map(product => ({
+            ...product.toObject(),
+            primaryImage: getImageUrl(product.primaryImage, baseUrl),
+            images: product.images.map(img => getImageUrl(img, baseUrl))
+        }));
+
+        res.status(200).json(productsWithImageUrls);
+
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to fetch products',
+            error: error.message
+        });
+    }
+};
 
 export const updateProduct = async (req, res) => {
     try {
@@ -263,6 +286,38 @@ export const getProductById = async (req, res) => {
             success: true,
             data: productWithImageUrls
         });
+
+    } catch (error) {
+        console.error('Error fetching product:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to fetch product',
+            error: error.message
+        });
+    }
+};
+
+export const getProductBySlug = async (req, res) => {
+    try {
+        const { slug } = req.params;
+        const product = await Product.findOne({ slug });
+        
+        if (!product) {
+            return res.status(404).json({
+                success: false,
+                message: 'Product not found'
+            });
+        }
+
+        // Add full image URLs to response
+        const baseUrl = `${req.protocol}://${req.get('host')}`;
+        const productWithImageUrls = {
+            ...product.toObject(),
+            primaryImage: getImageUrl(product.primaryImage, baseUrl),
+            images: product.images.map(img => getImageUrl(img, baseUrl))
+        };
+
+        res.status(200).json(productWithImageUrls);
 
     } catch (error) {
         console.error('Error fetching product:', error);

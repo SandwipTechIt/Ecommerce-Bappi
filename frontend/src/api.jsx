@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const apiClient = axios.create({
-    baseURL: "http://192.168.0.200:3000/",
+    baseURL: "http://192.168.0.200:3000",
     headers: {
         "Content-Type": "application/json",
     },
@@ -23,8 +23,9 @@ export const postApi = async (endpoint, data) => {
         const response = await apiClient.post(endpoint, data);
         return response.data || {};
     } catch (error) {
-        console.error("API Error:", error);
-        throw error;
+        console.log(error.response);
+        const errorMessage = error?.response?.data?.error || error?.response?.data?.message || error?.message || 'Something went wrong';
+        throw new Error(errorMessage);
     }
 };
 
@@ -33,8 +34,8 @@ export const putApi = async (endpoint, data) => {
         const response = await apiClient.put(endpoint, data);
         return response.data || {};
     } catch (error) {
-        console.error("API Error:", error);
-        throw error;
+        const errorMessage = error?.response?.data?.error || error?.response?.data?.message || error?.message || 'Something went wrong';
+        throw new Error(errorMessage);
     }
 };
 

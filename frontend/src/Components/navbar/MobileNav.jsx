@@ -1,24 +1,23 @@
 import { NavLink } from 'react-router-dom';
+import { CrossIcon } from '../../constants/icons';
 
 const MobileNav = ({ activeStyle, toggleMenu }) => {
   const categories = [
-    { name: 'All', path: '/' },
-    { name: 'Clothes', path: '/clothes' },
-    { name: 'Electronics', path: '/electronics' },
-    { name: 'Furnitures', path: '/furnitures' },
-    { name: 'Toys', path: '/toys' },
-    { name: 'Others', path: '/others' },
+    { name: 'Home', path: '/' },
+    { name: 'Products', path: '/products' },
   ];
 
   return (
     <div className='fixed inset-0 bg-white z-50 md:hidden'>
-      <div className='flex justify-between items-center py-5 px-4 border-b'>
-        <span className='font-bold text-2xl'>Shopi</span>
+      <div className='flex justify-between items-center h-[70px] px-4 border-b' onClick={toggleMenu}>
+        <NavLink to='/' className='font-bold text-2xl'>
+          Com<span className='text-[#E74C3C]'>fortY</span>
+        </NavLink>
         <button onClick={toggleMenu}>
-          <i className='fa-solid fa-xmark text-2xl'></i>
+          <CrossIcon className='w-6 h-6' fill='black' />
         </button>
       </div>
-      <div className='flex flex-col h-[calc(100%-76px)]'>
+      <div className='flex flex-col h-[calc(100%-70px)]'>
         <div className='flex-1 overflow-y-auto'>
           <ul className='flex flex-col py-4'>
             {categories.map((category) => (
@@ -33,6 +32,9 @@ const MobileNav = ({ activeStyle, toggleMenu }) => {
                 </NavLink>
               </li>
             ))}
+            <li className='px-4 py-2' onClick={toggleMenu}>
+              <a href="tel:01560044236" className="block text-lg">Contact</a>
+            </li>
           </ul>
         </div>
       </div>

@@ -10,11 +10,57 @@ input[type=number]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
 /* Hide spinners on Firefox */
 input[type=number] {
   -moz-appearance: textfield;
 }
 
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.show-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@media (width >=768px
+  /*  */
+) {
+
+  .show-scrollbar {
+    scrollbar-width: thin;
+    /* Firefox */
+    scrollbar-color: #888 #f1f1f1;
+    /* Firefox */
+  }
+
+  .show-scrollbar::-webkit-scrollbar {
+    height: 44px;
+    /* Horizontal scrollbar height */
+  }
+
+  .show-scrollbar::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+  }
+
+  .show-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 6px;
+  }
+}
+
+/* Custom scrollbar */
+
+
+.show-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
+/* Hide scrollbar buttons (arrows) */
+.show-scrollbar::-webkit-scrollbar-button {
+  display: none;
+}
 
 .bgPrimary {
   background-color: #e75c3a;
@@ -28,6 +74,15 @@ input[type=number] {
 
 .container {
   padding: 0px 12px;
+}
+
+.bgGlass {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 @import "tailwindcss";

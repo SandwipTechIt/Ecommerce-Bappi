@@ -2,12 +2,8 @@ import { NavLink } from 'react-router-dom';
 
 const DesktopNav = ({ activeStyle }) => {
   const categories = [
-    { name: 'All', path: '/' },
-    { name: 'Clothes', path: '/clothes' },
-    { name: 'Electronics', path: '/electronics' },
-    { name: 'Furnitures', path: '/furnitures' },
-    { name: 'Toys', path: '/toys' },
-    { name: 'Others', path: '/others' },
+    { name: 'Home', path: '/' },
+    { name: 'Products', path: '/products' }
   ];
 
   return (
@@ -21,6 +17,9 @@ const DesktopNav = ({ activeStyle }) => {
           </NavLink>
         </li>
       ))}
+      <li>
+        <a href="tel:01560044236" className="block">Contact</a>
+      </li>
     </ul>
   );
 };

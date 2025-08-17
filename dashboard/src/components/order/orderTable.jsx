@@ -134,7 +134,7 @@ export const OrderTable = ({ orders, onDeleteOrder }) => {
                   Image
                 </span>
                 <img
-                  src={`http://192.168.0.200:3000/images/${order.productID.primaryImage}`}
+                  src={`http://172.20.10.7:3000/images/${order.productID.primaryImage}`}
                   className="h-[50px] w-[50px] object-contain"
                   alt={order.productID.name}
                 />

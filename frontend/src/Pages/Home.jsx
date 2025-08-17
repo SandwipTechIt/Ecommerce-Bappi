@@ -1,44 +1,42 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { lazy, Suspense } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { LoadingSpinner } from '../Components/Ui/Loader';
-const Hero = lazy(() => import('../Components/home/hero'));
+import Hero from '../Components/home/hero';
+import Features from '../Components/home/features';
+// const Hero = lazy(() => import('../Components/home/hero'));
 const ProductSection = lazy(() => import('../Components/home/productSection'));
+
+
+import { getApi } from '../api';
 
 export default () => {
 
-    // const queryClient = useQueryClient();
+    const queryClient = useQueryClient();
+    const { data: products } = useQuery({
+        queryKey: ['products'],
+        queryFn: () => getApi('products'),
+        refetchOnMount: 'always',
+        refetchOnWindowFocus: true,
+    });
+    useQuery({
+        queryKey: ['productWithDetails'],
+        queryFn: () => getApi('getAllProductsWithDetails'),
+        enabled: !!products,
+        onSuccess: (allDetailedProducts) => {
+            allDetailedProducts.forEach(product => {
+                queryClient.setQueryData(['detailedProduct', String(product.slug)], product);
+            });
+        },
+    });
 
-    // const { data: products, isLoading } = useQuery({
-    //     queryKey: ['products'],
-    //     queryFn: getProducts,
-    //     onSuccess: (allProducts) => {
-    //         console.log('Product list loaded. Seeding individual product caches...');
-    //         allProducts.forEach(product => {
-    //             queryClient.setQueryData(['product', String(product.id)], product);
-    //         });
-    //     },
-    // });
-
-
-    // if (isLoading) return <div>Loading products...</div>;
 
     return (
-        <Suspense fallback={<LoadingSpinner />}>
-            <div>
-
-                {/* <h1 >Home</h1> */}
-                {/* <p className='primary'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia amet architecto natus sed eos repellendus officia? Animi recusandae, cum quaerat libero saepe vel? Possimus obcaecati cum perspiciatis similique adipisci quia aliquam molestiae molestias culpa unde iure placeat ut, nulla, explicabo autem sunt ipsa repellat nostrum velit cumque, minima ipsum accusamus numquam facere! Obcaecati officia itaque exercitationem eaque, odio repellendus libero ad aliquam commodi quidem totam eum voluptate dignissimos et, rerum accusamus. Excepturi alias laborum animi optio maiores, asperiores fugit eos blanditiis veritatis quo ad natus nostrum numquam assumenda, dolor adipisci nulla. Repellat itaque assumenda quia ab mollitia excepturi ratione doloribus fuga fugiat perferendis placeat, eligendi asperiores vero in. Eius earum maxime sunt quod amet quibusdam aliquam distinctio dicta repudiandae odit voluptatibus officiis adipisci incidunt provident saepe, dolore cum. Fugiat sapiente eos inventore facilis dolore laborum ducimus maxime eligendi tempora voluptatibus. Reprehenderit similique eveniet beatae corporis laboriosam ab pariatur cupiditate sequi. Molestiae voluptatem porro ea! Esse omnis porro minima amet cum nostrum modi eaque ipsum quidem blanditiis eum, repudiandae facilis voluptas pariatur vel accusantium aspernatur obcaecati. Vitae earum maxime illum similique architecto. Eius non quaerat ea! Eligendi est perferendis natus illo porro sit ducimus quam quo fugiat accusantium, animi possimus iste tempore! Quis repellat a, culpa impedit, dolores est excepturi officia beatae consectetur nobis odit repudiandae rerum ullam ducimus id, nihil earum quod. Quidem quos provident fuga dolorem, quasi omnis deserunt cumque aliquam pariatur adipisci, possimus fugit eaque odio ratione. Ad architecto distinctio quod repudiandae nihil dolorem perspiciatis aliquid vero eligendi eos totam et numquam voluptatem ipsum aperiam, voluptatum amet sequi obcaecati, laudantium rerum provident placeat! Pariatur magnam rem excepturi consequatur iure dolores neque officiis fuga sequi facilis ex, nulla, architecto eum quae quos voluptatibus temporibus magni dolorem omnis quaerat ab quisquam voluptates. Recusandae cupiditate incidunt architecto suscipit autem, tempore voluptatibus id aliquam, natus laborum voluptatem minima adipisci accusamus numquam esse beatae quis consequatur odit et quisquam temporibus officia! Quidem, temporibus debitis. Porro tenetur quidem quasi consectetur vero, aut distinctio ad voluptate voluptates sapiente cumque dicta suscipit quisquam repellendus impedit minima non hic qui fuga fugit dignissimos voluptatem maxime! Quaerat, veniam. Atque sit explicabo porro illum velit repellat a doloribus quam harum quo, dignissimos at corporis, tempora suscipit ad eius voluptates non assumenda magnam excepturi qui tenetur quidem libero. Voluptate iusto dolore, illo a, labore magnam eligendi fugiat rem, ipsa similique earum sit? Ratione perferendis quam unde illo aspernatur natus aperiam harum dolor animi blanditiis architecto adipisci ducimus fuga, atque non tempora magnam fugiat aliquam expedita quae minus esse neque. A similique consequatur dolore assumenda corporis quibusdam fuga? Corrupti deserunt exercitationem, dolorem eaque impedit fugit repudiandae omnis dolores, porro sit molestiae, eum rerum doloribus ab ipsa. Ab quisquam minus ducimus natus eligendi voluptas error doloribus recusandae, totam sequi non atque eaque aut omnis nemo laboriosam perferendis reiciendis officia et laborum vitae! Id provident minima laboriosam at placeat odit nemo recusandae unde odio error? Iste, necessitatibus aliquam saepe illum ad enim tempore molestias labore consequuntur quasi ullam veritatis! Similique maxime nisi, id voluptates eum vel temporibus sed saepe quam minima, delectus a nam distinctio inventore ullam culpa, unde voluptatum hic expedita consequuntur voluptate natus. Dolores odit doloremque enim laboriosam, iure quidem sed consequatur quis sint architecto adipisci debitis quo eos voluptate hic. Reiciendis dolore eveniet fugit a consequuntur ipsum vero deserunt soluta velit temporibus mollitia delectus eaque facilis corporis illo magnam aspernatur, laboriosam, eos voluptatem obcaecati. Dicta assumenda deleniti animi minus reiciendis? Officia, veritatis minus soluta dicta provident ipsum ea rerum sunt, nemo rem aliquam! Nostrum, laborum placeat? Eligendi dicta, aliquam inventore distinctio voluptatibus cumque facilis voluptas id debitis nemo ea illum voluptates harum et. Earum ipsa, quidem doloremque expedita accusamus dolores libero impedit error consequatur officiis pariatur neque harum iure officia fugit nisi doloribus, dignissimos voluptatem laborum repudiandae, consequuntur molestias temporibus fugiat? Alias eaque quos iure, sapiente asperiores facilis illo minima odit dignissimos ex excepturi quo iste quibusdam accusamus nulla voluptates at atque hic debitis temporibus. Suscipit nihil harum veniam nostrum alias veritatis architecto culpa quibusdam perferendis, repellendus earum, maiores ut itaque voluptate enim eius quasi sit tenetur impedit atque eos. Repudiandae accusantium ab ullam assumenda facilis, nesciunt rem aliquam incidunt magni expedita a suscipit, atque saepe iste doloremque animi quod sed laboriosam impedit doloribus praesentium officia culpa quos! Tempore iure ab, iusto, libero aspernatur obcaecati optio, minus quas necessitatibus pariatur odio accusantium veritatis debitis dicta repudiandae sapiente! Eius, inventore. Quaerat dolore provident enim est similique, in maiores, odit, eligendi aperiam ipsum repudiandae. Dolores, nulla omnis consequatur hic harum, perspiciatis, animi enim reprehenderit iusto necessitatibus ullam! Iusto sed consectetur obcaecati, quisquam facere tempora minus odit. Accusantium enim ea sed laboriosam cum ratione laborum aut, alias cupiditate labore deleniti nulla corrupti, veniam nobis quae nihil corporis explicabo itaque quis? Animi, odio accusantium aliquid facere mollitia ipsum voluptatibus, minus fugit corporis numquam aut consequatur repellendus nemo dolorum. Eaque, inventore. Fuga sequi laboriosam tenetur labore incidunt cupiditate sunt aliquam eligendi maxime sapiente earum ab porro molestiae soluta doloribus esse illo ad, quidem necessitatibus suscipit ratione voluptatem voluptatum quos officia? Omnis accusantium officiis ipsum voluptate natus doloribus magni sint? Blanditiis delectus pariatur eos, distinctio quia sint harum ex quam. Ipsum temporibus consectetur nihil a libero numquam architecto suscipit, ex, excepturi animi recusandae atque saepe? Consequatur accusantium aspernatur deleniti assumenda dolor architecto quod dolorem praesentium, esse, excepturi laboriosam cumque adipisci fuga asperiores rerum. Quam, temporibus sint magnam numquam deleniti, nemo quia perspiciatis, ducimus modi praesentium vero debitis sit inventore? Eveniet dolorum non delectus rem accusantium architecto sit, nam iste commodi laborum ipsa sint odit magnam debitis labore veritatis eius velit quas amet totam voluptatem laudantium obcaecati dolorem placeat. Distinctio pariatur cumque tempora deleniti quia enim modi, eius consectetur iste. Ipsam laborum omnis ullam facilis eveniet perferendis possimus laboriosam soluta accusantium, quaerat excepturi vel voluptates aliquid dolore vitae corporis neque accusamus voluptatum iste molestias est animi id beatae. Repellat tenetur, corrupti odio alias dolorem amet maiores illo praesentium quasi atque laboriosam fuga debitis eligendi repellendus dolor quidem fugit saepe nulla consequuntur! Suscipit neque hic perferendis officia harum?</p> */}
-                {/* <ul>
-                {products.map(product => (
-                    <li key={product.id}>
-                        <Link to={`/product/${product.id}`}>{product.title}</Link>
-                    </li>
-                ))}
-            </ul> */}
-                <Hero />
+        <div>
+            <Hero />
+            <Suspense fallback={<LoadingSpinner />}>
                 <ProductSection />
-            </div>
-        </Suspense>
-
+            </Suspense>
+            <Features />
+        </div>
     )
 }

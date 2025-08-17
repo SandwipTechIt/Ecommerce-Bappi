@@ -1,12 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@700&family=Poppins:wght@400;500;600&display=swap');
 
-/* * {
-
-} */
-
 .adduser {
   margin: 0;
-  padding: 0;
   height: 100dvh;
   overflow: hidden;
   margin: 0;
@@ -48,7 +43,7 @@
 /*=============== LOGIN ===============*/
 .login {
   position: relative;
-  height: 100vh;
+  height: 100dvh;
   display: grid;
   align-items: center;
 }

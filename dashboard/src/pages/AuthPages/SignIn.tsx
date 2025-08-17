@@ -53,7 +53,7 @@ export default () => {
     return (
         <div className="adduser">
             <div className="login">
-                <form onSubmit={handleLogin} className="login__form" autoComplete='off'>
+                <form onSubmit={handleLogin} autoComplete="off" className="login__form">
                     <h1 className="login__title">Login</h1>
                     <div className="login__content">
                         <div className="login__box">

@@ -3,11 +3,12 @@ import { NavLink } from 'react-router-dom';
 import DesktopNav from './DesktopNav.jsx';
 import MobileNav from './MobileNav.jsx';
 import SearchNav from './SearchNav.jsx';
+import { SearchIcon, MenuIcon, CrossIcon } from '../../constants/icons';
 
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
-    const activeStyle = 'underline underline-offset-4';
+    const activeStyle = 'underline underline-offset-4 font-semibold';
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -26,7 +27,7 @@ const Navbar = () => {
             <div className='flex items-center justify-between h-full px-4 md:px-8'>
                 {/* Logo */}
                 <NavLink to='/' className='font-bold text-2xl'>
-                    Shopi
+                Com<span className='text-[#E74C3C]'>fortY</span>
                 </NavLink>
 
                 {/* Desktop Navigation */}
@@ -47,15 +48,15 @@ const Navbar = () => {
 
                     {/* Search Icon */}
                     <button onClick={toggleSearch} className='text-2xl'>
-                        <i className='fa-solid fa-search'></i>
+                        <SearchIcon className='w-6 h-6' fill='black' />
                     </button>
 
                     {/* Mobile Menu Icon */}
                     <button className='md:hidden' onClick={toggleMenu}>
                         {isMenuOpen ? (
-                            <i className='fa-solid fa-xmark text-2xl'></i>
+                            <CrossIcon className='w-6 h-6' fill='black' />
                         ) : (
-                            <i className='fa-solid fa-bars text-2xl'></i>
+                            <MenuIcon className='w-6 h-6' fill='black' />
                         )}
                     </button>
                 </div>

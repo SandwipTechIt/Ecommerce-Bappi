@@ -787,3 +787,16 @@ body {
 .dark body {
   background: #101828;
 }
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: none; /* Remove shadow */
+    box-shadow: none; /* Standard property */
+    background-color: transparent !important; /* Remove yellow background */
+    border: none; /* Remove any custom border */
+    outline: none; /* Remove outline */
+    -webkit-text-fill-color: inherit !important; /* Ensure text color matches */
+    transition: background-color 5000s ease-in-out 0s; /* Hack to prevent background change */
+}

@@ -1,7 +1,9 @@
+import { LoadingSpinner } from "../Components/Ui/Loader";
+
 export default () => {
     return (
         <div>
-            <h1>404 Not Found</h1>
+            <LoadingSpinner />
         </div>
     )
 }
