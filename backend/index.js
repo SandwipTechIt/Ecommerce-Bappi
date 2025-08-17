@@ -22,14 +22,15 @@ import productRoutes from "./routes/product.route.js";
 import adminRoutes from "./routes/admin.routes.js";
 import orderRoutes from "./routes/order.routes.js";
 import staticsRoutes from "./routes/statics.routes.js";
+import stocksRoutes from "./routes/stocks.routes.js";
 
 app.use(productRoutes);
 app.use(adminRoutes);
 app.use(orderRoutes);
 app.use(staticsRoutes);
+app.use(stocksRoutes);
 
 app.get("/test", (req, res) => {
-  console.log("Test");
   try {
     // res.status(200).json({
     //     success: true,

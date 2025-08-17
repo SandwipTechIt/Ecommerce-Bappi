@@ -31,6 +31,11 @@ const navItems: NavItem[] = [
       { name: "All Order", path: "/orders" },
     ],
   },
+  {
+    icon: "fas fa-arrow-trend-up",
+    name: "Stocks",
+    path: "/stocks",
+  },
 ];
 
 const othersItems: NavItem[] = [

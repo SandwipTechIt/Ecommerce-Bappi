@@ -75,7 +75,6 @@ export const cleanupUploadedFiles = async (files) => {
     
     if (filesToDelete.length > 0) {
         const result = await deleteMultipleImages(filesToDelete);
-        console.log('Cleanup completed:', result);
     }
 };
 

@@ -37,7 +37,6 @@ export default () => {
 
   const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // console.log(loginData);
     try {
       await postApi(`updateAdmin/${state?.admin?._id}`, loginData);
       alert("Admin updated successfully");

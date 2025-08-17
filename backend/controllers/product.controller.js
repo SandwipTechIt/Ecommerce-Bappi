@@ -1,10 +1,12 @@
 import Product from "../models/product.model.js";
 import { cleanupUploadedFiles, deleteMultipleImages, getImageUrl } from "../utils/imageUtils.js";
+import { createStock } from "./stocks.controller.js";
+
 
 export const createProduct = async (req, res) => {
     try {
         const { name, description, categories, price, discount, variants, status } = req.body;
-        
+
         // Validate required fields
         if (!name || !price) {
             // Clean up uploaded files if validation fails
@@ -71,6 +73,9 @@ export const createProduct = async (req, res) => {
             images: product.images.map(img => getImageUrl(img, baseUrl))
         };
 
+        await createStock(product._id, 1);
+
+
         res.status(201).json({
             success: true,
             message: 'Product created successfully',
@@ -79,12 +84,12 @@ export const createProduct = async (req, res) => {
 
     } catch (error) {
         console.error('Error creating product:', error);
-        
+
         // Clean up uploaded files if database operation fails
         if (req.files) {
             await cleanupUploadedFiles(req.files);
         }
-        
+
         res.status(500).json({
             success: false,
             message: 'Failed to create product',
@@ -96,10 +101,10 @@ export const createProduct = async (req, res) => {
 export const deleteProduct = async (req, res) => {
     try {
         const { id } = req.params;
-        
+
         // Find the product first to get image filenames
         const product = await Product.findById(id);
-        
+
         if (!product) {
             return res.status(404).json({
                 success: false,
@@ -122,7 +127,6 @@ export const deleteProduct = async (req, res) => {
         // Delete associated images
         if (imagesToDelete.length > 0) {
             const deleteResult = await deleteMultipleImages(imagesToDelete);
-            console.log('Image deletion result:', deleteResult);
         }
 
         res.status(200).json({
@@ -143,7 +147,7 @@ export const deleteProduct = async (req, res) => {
 export const getAllProducts = async (req, res) => {
     try {
         const products = await Product.find().sort({ createdAt: -1 }).select("-images -__v -variants -categories -updatedAt");
-        
+
         // Add full image URLs to response
         const baseUrl = `${req.protocol}://${req.get('host')}`;
         const productsWithImageUrls = products.map(product => ({
@@ -166,7 +170,7 @@ export const getAllProducts = async (req, res) => {
 export const getAllProductsWithDetails = async (req, res) => {
     try {
         const products = await Product.find().sort({ createdAt: -1 }).select("-__v -updatedAt");
-        
+
         // Add full image URLs to response
         const baseUrl = `${req.protocol}://${req.get('host')}`;
         const productsWithImageUrls = products.map(product => ({
@@ -190,7 +194,7 @@ export const getAllProductsWithDetails = async (req, res) => {
 export const updateProduct = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, description, price, discount, variants, status, imagesToDelete } = req.body;
+        const { name, description, price, discount, variants, status, imagesToDelete, isStock } = req.body;
 
         const product = await Product.findById(id);
         if (!product) {
@@ -234,6 +238,7 @@ export const updateProduct = async (req, res) => {
         product.price = price ? parseFloat(price) : product.price;
         product.discount = discount ? parseFloat(discount) : product.discount;
         product.status = status || product.status;
+        product.isStock = isStock || product.isStock;
         if (variants) {
             product.variants = typeof variants === 'string' ? JSON.parse(variants) : variants;
         }
@@ -266,7 +271,7 @@ export const getProductById = async (req, res) => {
     try {
         const { id } = req.params;
         const product = await Product.findById(id);
-        
+
         if (!product) {
             return res.status(404).json({
                 success: false,
@@ -301,7 +306,7 @@ export const getProductBySlug = async (req, res) => {
     try {
         const { slug } = req.params;
         const product = await Product.findOne({ slug });
-        
+
         if (!product) {
             return res.status(404).json({
                 success: false,

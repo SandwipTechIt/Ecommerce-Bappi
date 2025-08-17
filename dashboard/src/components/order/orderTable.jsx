@@ -97,7 +97,6 @@ export const OrderTable = ({ orders, onDeleteOrder }) => {
     );
   }
 
-  console.log(orders);
   return (
     <div
       id="product-table"
@@ -134,9 +133,9 @@ export const OrderTable = ({ orders, onDeleteOrder }) => {
                   Image
                 </span>
                 <img
-                  src={`http://172.20.10.7:3000/images/${order.productID.primaryImage}`}
+                  src={order?.primaryImage}
                   className="h-[50px] w-[50px] object-contain"
-                  alt={order.productID.name}
+                  alt={order?.productID?.name}
                 />
               </td> 
               {/* Data Cells with Mobile Labels */}

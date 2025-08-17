@@ -1,6 +1,6 @@
 import Order from "../models/order.model.js";
 import Product from "../models/product.model.js";
-
+import { getImageUrl } from "../utils/imageUtils.js";
 
 export const createOrder = async (req, res) => {
 
@@ -29,9 +29,15 @@ export const getOrders = async (req, res) => {
             path: "productID",
             select: "primaryImage",
         })
-        res.status(200).json(orders);
+
+        const baseUrl = `${req.protocol}://${req.get('host')}`;
+        const ordersWithImageUrls = orders.map(order => ({
+            ...order.toObject(),
+            primaryImage: getImageUrl(order.productID.primaryImage, baseUrl)
+        }));
+        res.status(200).json(ordersWithImageUrls);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ error: error.message }); 
     }
 }
 
@@ -41,7 +47,12 @@ export const getOrder = async (req, res) => {
             path: "productID",
             select: "-description -__v -variants -categories",
         });
-        res.status(200).json(order);
+        const baseUrl = `${req.protocol}://${req.get('host')}`;
+        const orderWithImageUrl = {
+            ...order.toObject(),
+            primaryImage: getImageUrl(order.productID.primaryImage, baseUrl)
+        };
+        res.status(200).json(orderWithImageUrl);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

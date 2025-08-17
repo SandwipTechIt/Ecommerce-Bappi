@@ -71,7 +71,7 @@ const ProductInfo = ({ product }) => {
       <div className="flex gap-2 items-center">
         <p className="m-0 flex items-center font-bold text-gray-900 px-2 py-1 rounded">
 
-        <del className="text-gray-500 mr-2">৳{product.price}</del>
+          <del className="text-gray-500 mr-2">৳{product.price}</del>
 
           <SvgIcon className="md:inline-block align-middle mr-1 hidden" />
           <span className="md:hidden inline-block align-middle text-2xl mr-1">৳ </span>
@@ -104,19 +104,32 @@ const SizeSelector = ({ variants, selectedSize, handleSizeSelect }) => {
       <h3 className="text-lg font-medium text-gray-900">Size</h3>
       <div className="mt-2 flex flex-wrap gap-2">
         {(variants || []).map((variant) => (
-          <button
-            key={variant._id || variant.size}
-            onClick={() => handleSizeSelect(variant.size)}
-            disabled={!variant.stock}
-            className={`px-4 py-2 border rounded-md text-sm font-medium ${selectedSize === variant.size
-              ? 'border-[#e75c3a] bg-[#ffcecad6] text-[#e75c3a]'
-              : variant.stock
-                ? 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
-                : 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed'
-              }`}
-          >
-            {variant.size}
-          </button>
+
+          variant.stock ? (
+            <button
+              key={variant._id || variant.size}
+              onClick={() => handleSizeSelect(variant.size)}
+              disabled={!variant.stock}
+              className={`px-4 relative overflow-hidden py-2 border rounded-md text-sm font-medium ${selectedSize === variant.size
+                ? 'border-[#e75c3a] bg-[#ffcecad6] text-[#e75c3a]'
+                : variant.stock
+                  ? 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+                  : 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed'
+                }`}
+            >
+              {variant.size}
+            </button>
+          ) : (
+            <button
+              key={variant._id || variant.size}
+              onClick={() => handleSizeSelect(variant.size)}
+              disabled={!variant.stock}
+              className={`disableButton px-4 relative overflow-hidden py-2 border rounded-md text-sm font-medium border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed`}
+            >
+              {variant.size}
+            </button>
+          )
+
         ))}
       </div>
     </div>
@@ -204,7 +217,6 @@ const ProductDetails = () => {
     queryFn: () => getApi(`/getProductBySlug/${slug}`),
     initialData: () => {
       const seeded = queryClient.getQueryData(['detailedProduct', String(slug)]);
-      console.log("seeded", seeded);
       if (seeded) return seeded;
       const list = queryClient.getQueryData(['productWithDetails']);
       return Array.isArray(list) ? list.find(p => String(p.slug) === String(slug)) : undefined;

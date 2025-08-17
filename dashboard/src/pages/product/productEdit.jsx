@@ -12,14 +12,14 @@ import { useParams } from 'react-router';
 const ProductEdit = () => {
     const navigate = useNavigate();
     const { id } = useParams();
-    console.log(id);
 
     // Form state
     const [formData, setFormData] = useState({
         name: '',
         description: '',
         price: '',
-        discount: '0',
+        discount: '',
+        isStock: "",
         variants: [{ size: '', stock: true }],
         status: '',
         primaryImage: { existing: null, newFile: null }, // existing is URL, newFile is File
@@ -128,6 +128,11 @@ const ProductEdit = () => {
         });
     };
 
+    const handleCheckboxChange = (e) => {
+        const { name, checked } = e.target;
+        setFormData(prev => ({ ...prev, [name]: checked }));
+    };
+
     // Validate form
     const validateForm = () => {
         const newErrors = {};
@@ -209,7 +214,8 @@ const ProductEdit = () => {
                     name: '',
                     description: '',
                     price: '',
-                    discount: '0',
+                    discount: '',
+                    isStock: '',
                     variants: [{ size: '', stock: true }],
                     status: '',
                     primaryImage: { existing: null, newFile: null },
@@ -244,7 +250,7 @@ const ProductEdit = () => {
         setSubmitError('');
     };
 
-        useEffect(() => {
+    useEffect(() => {
         const fetchProduct = async () => {
             try {
                 const response = await getApi(`/product/${id}`);
@@ -254,7 +260,8 @@ const ProductEdit = () => {
                     name: product.name || '',
                     description: product.description || '',
                     price: product.price || '',
-                    discount: product.discount || '0',
+                    discount: product.discount || '',
+                    isStock: product.isStock || true,
                     status: product.status || '',
                     variants: product.variants && product.variants.length > 0 ? product.variants : [{ size: '', stock: true }],
                     primaryImage: { existing: product.primaryImage, newFile: null },
@@ -320,6 +327,18 @@ const ProductEdit = () => {
                                 error={errors.price}
                             />
                             <FormField
+                                label="Discount (%)"
+                                type="number"
+                                name="discount"
+                                value={formData.discount}
+                                onChange={handleChange}
+                                placeholder="0"
+                                required={true}
+                                min="0"
+                                step="false"
+                                error={errors.discount}
+                            />
+                            <FormField
                                 label="Status"
                                 type="text"
                                 name="status"
@@ -328,7 +347,19 @@ const ProductEdit = () => {
                                 placeholder="Enter product status"
                                 error={errors.status}
                             />
-
+                            <div className="flex items-center">
+                                <input
+                                    type="checkbox"
+                                    id="isStock"
+                                    name="isStock"
+                                    checked={formData.isStock}
+                                    onChange={handleCheckboxChange}
+                                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                />
+                                <label htmlFor="isStock" className="ml-2 block text-sm text-gray-900 dark:text-white">
+                                    In Stock
+                                </label>
+                            </div>
 
                         </div>
 

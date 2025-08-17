@@ -8,19 +8,32 @@ const SizeSelector = ({ variants, selectedSize, handleSizeSelect }) => {
       <h3 className="text-lg font-medium text-gray-900">Size</h3>
       <div className="mt-2 flex flex-wrap gap-2">
         {(variants || []).map((variant) => (
-          <button
-            key={variant._id || variant.size}
-            onClick={() => handleSizeSelect(variant.size)}
-            disabled={!variant.stock}
-            className={`px-4 py-2 border rounded-md text-sm font-medium ${selectedSize === variant.size
-              ? 'border-[#e75c3a] bg-[#ffcecad6] text-[#e75c3a]'
-              : variant.stock
-                ? 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
-                : 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed'
-              }`}
-          >
-            {variant.size}
-          </button>
+
+          variant.stock ? (
+            <button
+              key={variant._id || variant.size}
+              onClick={() => handleSizeSelect(variant.size)}
+              disabled={!variant.stock}
+              className={`px-4 relative overflow-hidden py-2 border rounded-md text-sm font-medium ${selectedSize === variant.size
+                ? 'border-[#e75c3a] bg-[#ffcecad6] text-[#e75c3a]'
+                : variant.stock
+                  ? 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+                  : 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed'
+                }`}
+            >
+              {variant.size}
+            </button>
+          ) : (
+            <button
+              key={variant._id || variant.size}
+              onClick={() => handleSizeSelect(variant.size)}
+              disabled={!variant.stock}
+              className={`disableButton px-4 relative overflow-hidden py-2 border rounded-md text-sm font-medium border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed`}
+            >
+              {variant.size}
+            </button>
+          )
+
         ))}
       </div>
     </div>

@@ -10,32 +10,32 @@ import { postApi } from '../../api';
 
 const CreateProduct = () => {
     const navigate = useNavigate();
-
     // Form state
     const [formData, setFormData] = useState({
         name: '',
         description: '',
         price: '',
-        discount: '0',
+        discount: '', // Already present but not displayed in form
+        isStock: true, // New field for stock status
         variants: [{ size: '', stock: true }],
         primaryImage: [],
         images: [],
         status: ''
     });
-
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitError, setSubmitError] = useState('');
 
-
     // Handle input changes
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const { name, value, type, checked } = e.target;
+        // Handle checkbox inputs
+        const val = type === 'checkbox' ? checked : value;
+        
         setFormData({
             ...formData,
-            [name]: value
+            [name]: val
         });
-
         // Clear error when user starts typing
         if (errors[name]) {
             setErrors({
@@ -45,7 +45,7 @@ const CreateProduct = () => {
         }
     };
 
-    // Handle image changes
+        // Handle image changes
     const handlePrimaryImageChange = (images) => {
         setFormData({
             ...formData,
@@ -109,26 +109,21 @@ const CreateProduct = () => {
         });
     };
 
-    // Validate form
+    // Validate form - updated to include discount validation
     const validateForm = () => {
         const newErrors = {};
-
         if (!formData.name.trim()) {
             newErrors.name = 'Product name is required';
         }
-
         if (!formData.price || formData.price <= 0) {
             newErrors.price = 'Price must be greater than 0';
         }
-
         if (formData.discount < 0) {
             newErrors.discount = 'Discount cannot be negative';
         }
-
         if (formData.primaryImage.length === 0) {
             newErrors.primaryImage = 'Primary image is required';
         }
-
         // Validate variants
         const variantErrors = formData.variants.map(variant => {
             const variantError = {};
@@ -137,52 +132,45 @@ const CreateProduct = () => {
             }
             return variantError;
         });
-
         if (variantErrors.some(error => Object.keys(error).length > 0)) {
             newErrors.variants = variantErrors;
         }
-
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
 
-    // Handle form submission
+    // Handle form submission - updated to include isStock
     const handleSubmit = async (e) => {
         e.preventDefault();
         setSubmitError('');
-
         if (!validateForm()) {
             return;
         }
-
         setIsSubmitting(true);
-
         const data = new FormData();
         data.append('name', formData.name);
         data.append('description', formData.description);
         data.append('categories', formData.categories);
         data.append('price', formData.price);
         data.append('discount', formData.discount);
+        data.append('isStock', formData.isStock); // Added isStock field
         data.append('status', formData.status);
         data.append('variants', JSON.stringify(formData.variants));
-
         if (formData.primaryImage.length > 0) {
             data.append('primaryImage', formData.primaryImage[0]);
         }
-
         formData.images.forEach(image => {
             data.append('images', image);
         });
-
         try {
             const response = await postApi('/createProduct', data);
-
             if (response.success) {
                 setFormData({
                     name: '',
                     description: '',
                     price: '',
                     discount: '0',
+                    isStock: true, // Reset isStock to default
                     variants: [{ size: '', stock: true }],
                     primaryImage: [],
                     images: [],
@@ -200,12 +188,14 @@ const CreateProduct = () => {
         }
     };
 
-    // Handle form reset
+    // Handle form reset - updated to include isStock
     const handleReset = () => {
         setFormData({
             name: '',
             description: '',
             price: '',
+            discount: '0',
+            isStock: true, // Reset isStock to default
             variants: [{ size: '', stock: true }],
             primaryImage: [],
             images: [],
@@ -216,16 +206,14 @@ const CreateProduct = () => {
     };
 
     return (
-        <div className="min-h-screen  py-8">
-            <div className=" mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen py-8">
+            <div className="mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="bgGlass shadow rounded-lg overflow-hidden">
                     <div className="px-6 py-5 border-b border-gray-200">
                         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Create New Product</h1>
                     </div>
-
                     <form onSubmit={handleSubmit} className="px-6 py-5">
                         {submitError && <ErrorMessage message={submitError} />}
-
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="md:col-span-2">
                                 <FormField
@@ -238,7 +226,6 @@ const CreateProduct = () => {
                                     error={errors.name}
                                 />
                             </div>
-
                             <div className="md:col-span-2">
                                 <TextAreaField
                                     label="Description"
@@ -249,18 +236,28 @@ const CreateProduct = () => {
                                     rows={4}
                                 />
                             </div>
-
                             <FormField
-                                label="Price (৳)"
+                                label="Price"
                                 type="number"
                                 name="price"
                                 value={formData.price}
                                 onChange={handleChange}
-                                placeholder="0"
+                                placeholder="Enter product price"
                                 required={true}
                                 min="0"
                                 step="false"
                                 error={errors.price}
+                            />
+                            <FormField
+                                label="Discount price"
+                                type="number"
+                                name="discount"
+                                value={formData.discount}
+                                onChange={handleChange}
+                                placeholder="Enter discount price"
+                                min="0"
+                                step="0.01"
+                                error={errors.discount}
                             />
                             <FormField
                                 label="Status"
@@ -271,23 +268,27 @@ const CreateProduct = () => {
                                 placeholder="Enter product status"
                                 error={errors.status}
                             />
-
-                            {/* <SelectField
-                label="Category"
-                name="categories"
-                value={formData.categories}
-                onChange={handleChange}
-                options={statusOptions}
-              /> */}
+                            {/* New isStock field */}
+                            <div className="flex items-center">
+                                <input
+                                    type="checkbox"
+                                    id="isStock"
+                                    name="isStock"
+                                    checked={formData.isStock}
+                                    onChange={handleChange}
+                                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                />
+                                <label htmlFor="isStock" className="ml-2 block text-sm text-gray-900 dark:text-white">
+                                    In Stock
+                                </label>
+                            </div>
                         </div>
-
                         <VariantForm
                             variants={formData.variants}
                             onChange={handleVariantsChange}
                             onAdd={handleAddVariant}
                             onRemove={handleRemoveVariant}
                         />
-
                         <ImageUpload
                             label="Primary Image"
                             name="primaryImage"
@@ -297,7 +298,6 @@ const CreateProduct = () => {
                             required={true}
                             error={errors.primaryImage}
                         />
-
                         <ImageUpload
                             label="Additional Images"
                             name="images"
@@ -306,7 +306,6 @@ const CreateProduct = () => {
                             onRemove={handleRemoveImage}
                             multiple={true}
                         />
-
                         <div className="flex justify-end space-x-3 mt-8">
                             <button
                                 type="button"

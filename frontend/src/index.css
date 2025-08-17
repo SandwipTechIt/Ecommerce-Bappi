@@ -86,3 +86,37 @@ input[type=number] {
 }
 
 @import "tailwindcss";
+
+
+.disableButton::before {
+  content: "";
+  width: 120%;
+  height: 2px;
+  border-top: solid 1px;
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: -10%;
+  transform: translate(-50%, -50%);
+  -webkit-transform: rotate(-26.5deg);
+  -moz-transform: rotate(-26.5deg);
+  -ms-transform: rotate(-26.5deg);
+  -o-transform: rotate(-26.5deg);
+  /* transform: rotate(-26.5deg); */
+}
+.disableButton::after {
+    right: -50px;
+    content: "";
+    width: 120%;
+    height: 2px;
+    border-top: solid 1px;
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -22%) rotate(26.5deg);
+    -moz-transform: translate(-50%, -22%) rotate(26.5deg);
+    -ms-transform: translate(-50%, -22%) rotate(26.5deg);
+    -o-transform: translate(-50%, -22%) rotate(26.5deg);
+    transform: translate(-50%, -22%) rotate(26.5deg);
+}

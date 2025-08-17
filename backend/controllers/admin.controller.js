@@ -12,10 +12,6 @@ export const createAdmin = async (req, res) => {
 
 
 export const loginAdmin = async (req, res) => {
-
-    console.log(req.body);
-    
-
     try {
         const admin = await Admin.findOne({ name: req.body.name });
         if (!admin) {

@@ -16,6 +16,7 @@ import AddProduct from "./pages/product/addProduct";
 import ProductEdit from "./pages/product/productEdit";
 import AllOrders from "./pages/order/showOrders";
 import ViewOrder from "./pages/order/viewOrder";
+import AllStocks from "./pages/stocks/allStocks";
 
 export default function App() {
   const { state } = setContext();
@@ -37,6 +38,7 @@ export default function App() {
                   <Route path="/editProduct/:id" element={<ProductEdit />} />
                   <Route path="/orders" element={<AllOrders />} />
                   <Route path="/order/:id" element={<ViewOrder />} />
+                  <Route path="/stocks" element={<AllStocks />} />
                 </Route>
 
                 {/* Auth Layout */}

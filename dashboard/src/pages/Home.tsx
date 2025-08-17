@@ -14,7 +14,6 @@ export default function Home() {
     refetchOnWindowFocus: true,
     staleTime: 5 * 60 * 1000,
   });
-  console.log(data);
   
   if (isLoading) return <Loader />;
   if (error) return <ErrorMessage msg={error?.message} retry={refetch} />;

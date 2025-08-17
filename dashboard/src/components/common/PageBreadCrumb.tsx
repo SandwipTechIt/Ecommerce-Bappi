@@ -7,7 +7,6 @@ interface BreadcrumbProps {
 const PageBreadcrumb: React.FC<BreadcrumbProps> = ({ pageTitle }) => {
   const { pathname } = useLocation();
   const pathnames = pathname.split("/").filter(Boolean);
-  console.log(pathnames);
   return (
     <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
       <h2 className="text-xl font-semibold text-gray-800 dark:text-white/90">

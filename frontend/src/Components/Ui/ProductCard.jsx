@@ -12,7 +12,7 @@ export default ({ product }) => {
     };
 
     return (
-        <div id="productCard">
+        <div id="productCard" className="w-full">
             <Link to={`/product/${product.slug}`} className="block h-full">
                 <div className="relative overflow-hidden rounded-lg shadow-xl hover:shadow-2xl transition-all duration-300 bg-white h-full flex flex-col">
                     {product.status && (
