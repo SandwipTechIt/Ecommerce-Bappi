@@ -1,9 +1,15 @@
 import React from "react";
 import { Link } from "react-router";
 
-const Widget = ({ totalProducts, totalOrders, pendingOrders, completedOrders }) => {
-
-
+const Widget = ({
+  totalProducts,
+  totalOrders,
+  pendingOrders,
+  completedOrders,
+  cancelledOrders,
+  lifetimeOrder,
+  lifetimeRevenue,
+}) => {
   const widgets = [
     {
       type: "totalProducts",
@@ -13,17 +19,17 @@ const Widget = ({ totalProducts, totalOrders, pendingOrders, completedOrders }) 
       icon: "fa-box",
       bgColor: "bg-blue-600",
       iconColor: "text-blue-600",
-      value:totalProducts,
+      value: totalProducts,
     },
     {
       type: "totalOrders",
-      title: "Orders",
+      title: "Current Orders",
       to: "orders",
       link: "View all orders",
-      icon: "fa-cart-plus",  
+      icon: "fa-cart-plus",
       bgColor: "bg-green-600",
       iconColor: "text-green-600",
-      value:totalOrders,
+      value: totalOrders,
     },
     {
       type: "pendingOrders",
@@ -33,7 +39,7 @@ const Widget = ({ totalProducts, totalOrders, pendingOrders, completedOrders }) 
       icon: "fa-clock",
       bgColor: "bg-yellow-500",
       iconColor: "text-yellow-500",
-      value:pendingOrders,
+      value: pendingOrders,
     },
     {
       type: "completedOrders",
@@ -41,10 +47,40 @@ const Widget = ({ totalProducts, totalOrders, pendingOrders, completedOrders }) 
       to: "orders",
       link: "View all orders",
       icon: "fa-check",
+      bgColor: "bg-sky-600",
+      iconColor: "text-sky-600",
+      value: completedOrders,
+    },
+    {
+      type: "cancelOrders",
+      title: "Canceled Orders",
+      to: "orders",
+      link: "View all orders",
+      icon: "fa-check",
       bgColor: "bg-red-600",
       iconColor: "text-red-600",
-      value:completedOrders,
-    }
+      value: cancelledOrders,
+    },
+    {
+      type: "lifetimeRevenue",
+      title: "Life time Revenue",
+      to: "",
+      link: "",
+      icon: "fa-solid fa-file-invoice-dollar",
+      bgColor: "bg-fuchsia-600",
+      iconColor: "text-fuchsia-600",
+      value: lifetimeRevenue,
+    },
+    {
+      type: "lifetimeOrder",
+      title: "Total Product Order",
+      to: "orders",
+      link: "View all orders",
+      icon: "fa-dolly",
+      bgColor: "bg-emerald-600",
+      iconColor: "text-emerald-600",
+      value: lifetimeOrder,
+    },
   ];
 
   return (
@@ -56,9 +92,7 @@ const Widget = ({ totalProducts, totalOrders, pendingOrders, completedOrders }) 
         >
           <div className="flex flex-col justify-between">
             <span className="font-bold text-lg">{widget.title}</span>
-            <span className="text-3xl font-extrabold">
-              {widget.value}
-            </span>
+            <span className="text-3xl font-extrabold">{widget.value}</span>
             <Link
               to={`/${widget.to}`}
               className="w-max text-sm border-b border-white hover:border-opacity-70 transition-all"

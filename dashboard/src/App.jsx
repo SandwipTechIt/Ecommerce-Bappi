@@ -1,9 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router";
 
-
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import { setContext } from "./context/authContext";
-
 
 import SignIn from "./pages/AuthPages/SignIn";
 import NotFound from "./pages/OtherPage/NotFound";
@@ -25,35 +23,30 @@ export default function App() {
       <Router>
         <ScrollToTop />
         <Routes>
+          {state.admin ? (
+            <>
+              {/* Dashboard Layout */}
+              <Route element={<AppLayout />}>
+                <Route index path="/" element={<Home />} />
+                <Route path="/profile" element={<UserProfiles />} />
+                <Route path="/addProduct" element={<AddProduct />} />
+                <Route path="/allProducts" element={<AllProducts />} />
+                <Route path="/editProduct/:id" element={<ProductEdit />} />
+                <Route path="/orders" element={<AllOrders />} />
+                <Route path="/order/:id" element={<ViewOrder />} />
+                <Route path="/stocks" element={<AllStocks />} />
+              </Route>
 
-          {
-            state.admin ? (
-              <>
-                {/* Dashboard Layout */}
-                <Route element={<AppLayout />}>
-                  <Route index path="/" element={<Home />} />
-                  <Route path="/profile" element={<UserProfiles />} />
-                  <Route path="/addProduct" element={<AddProduct />} />
-                  <Route path="/allProducts" element={<AllProducts />} />
-                  <Route path="/editProduct/:id" element={<ProductEdit />} />
-                  <Route path="/orders" element={<AllOrders />} />
-                  <Route path="/order/:id" element={<ViewOrder />} />
-                  <Route path="/stocks" element={<AllStocks />} />
-                </Route>
+              {/* Auth Layout */}
+              <Route path="/signin" element={<SignIn />} />
+              <Route path="/signOut" element={<SignOut />} />
 
-                {/* Auth Layout */}
-                <Route path="/signin" element={<SignIn />} />
-                <Route path="/signOut" element={<SignOut />} />
-
-                {/* Fallback Route */}
-                <Route path="*" element={<NotFound />} />
-              </>
-            ) : (
-              <Route path="/*" element={<SignIn />} />
-
-            )
-          }
-
+              {/* Fallback Route */}
+              <Route path="*" element={<NotFound />} />
+            </>
+          ) : (
+            <Route path="/*" element={<SignIn />} />
+          )}
         </Routes>
       </Router>
     </>

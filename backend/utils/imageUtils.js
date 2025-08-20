@@ -78,12 +78,7 @@ export const cleanupUploadedFiles = async (files) => {
     }
 };
 
-/**
- * Get image URL for frontend
- * @param {string} filename - The filename
- * @param {string} baseUrl - Base URL of the server
- * @returns {string} - Full image URL
- */
+
 export const getImageUrl = (filename, baseUrl = '') => {
     if (!filename) return null;
     return `${baseUrl}/images/${filename}`;

@@ -5,8 +5,6 @@ import { getApi } from "../api";
 import Loader from "../components/shared/Loader";
 import ErrorMessage from "../components/shared/ErrorMessage";
 export default function Home() {
-
-  
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["staticData"],
     queryFn: () => getApi("getStaticData"),
@@ -14,13 +12,21 @@ export default function Home() {
     refetchOnWindowFocus: true,
     staleTime: 5 * 60 * 1000,
   });
-  
+
   if (isLoading) return <Loader />;
   if (error) return <ErrorMessage msg={error?.message} retry={refetch} />;
   return (
     <div className="home-container">
       <Chart monthlyOrders={data?.monthlyOrders} />
-      <Widget totalProducts={data?.totalProducts} totalOrders={data?.totalOrders} pendingOrders={data?.pendingOrders} completedOrders={data?.completedOrders} cancelledOrders={data?.cancelledOrders} />
+      <Widget
+        totalProducts={data?.totalProducts}
+        totalOrders={data?.totalOrders}
+        pendingOrders={data?.pendingOrders}
+        completedOrders={data?.completedOrders}
+        cancelledOrders={data?.cancelledOrders}
+        lifetimeOrder={data?.lifetimeOrder}
+        lifetimeRevenue={data?.lifetimeRevenue}
+      />
     </div>
   );
 }
