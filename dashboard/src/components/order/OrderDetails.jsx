@@ -210,7 +210,7 @@ export default function OrderDetails({ order }) {
             {productID.name}
           </p>
           <p className="text-gray-600 dark:text-gray-200">
-            Price: ৳ {productID.price}
+            Price: ৳ {productID.discount}
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-200">
             Status: {productID.status}
@@ -248,7 +248,7 @@ export default function OrderDetails({ order }) {
 
             <div className="flex justify-between text-base font-semibold text-gray-900 dark:text-white">
               <span>Total:</span>
-              <span>৳ {Number(productID.price) * Number(order.quantity)}</span>
+              <span>৳ {Number(productID.discount) * Number(order.quantity)}</span>
             </div>
 
             <hr className="my-3 border-gray-200 dark:border-gray-600" />
@@ -292,7 +292,7 @@ export default function OrderDetails({ order }) {
 
             <div className="hidden">
               <div ref={contentRef}>
-                <InvoiceDesign55x85 invoiceNo={order._id} name={order.name} address={order.address} mobile={order.number} items={[{ description: order?.productID?.name, qty: order?.quantity, price: order?.productID?.price }]} />
+                <InvoiceDesign55x85 invoiceNo={order._id} name={order.name} address={order.address} mobile={order.number} items={[{ description: order?.productID?.name, qty: order?.quantity, price: order?.productID?.discount }]} />
               </div>
             </div>
 

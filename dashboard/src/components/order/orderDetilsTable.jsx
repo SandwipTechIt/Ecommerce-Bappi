@@ -49,7 +49,7 @@ const ConfirmDeleteModal = ({ onCancel, onConfirm }) => {
           <h2 className="text-lg font-bold text-gray-800">Confirm Deletion</h2>
         </div>
         <p className="text-gray-600 mb-6">
-          Are you sure you want to delete this product? This action cannot be
+          Are you sure you want to delete this order? This action cannot be
           undone.
         </p>
         <div className="flex justify-end gap-3">
@@ -71,32 +71,33 @@ const ConfirmDeleteModal = ({ onCancel, onConfirm }) => {
   );
 };
 
-export const ProductTable = ({ products, onDeleteProduct }) => {
-  const navigate = useNavigate();
+export default ({ orders, onDeleteOrder }) => {
+    const navigate = useNavigate();
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const handleDeleteRequest = (productId) => {
-    setDeleteConfirm(productId);
+    setDeleteConfirm(productId);  
   };
   const handleConfirmDelete = async () => {
     try {
-      await onDeleteProduct(deleteConfirm);
+      await onDeleteOrder(deleteConfirm);
       setDeleteConfirm(null);
     } catch (error) {
-      alert("Error Deleting Product");
+      alert("Error Deleting Order");
     }
   };
   const handleCancelDelete = () => {
     setDeleteConfirm(null);
   };
 
-  if (!products || products.length < 1) {
+  if (!orders || orders.length < 1) {
     return (
       <div className="min-h-[240px] flex flex-col items-center justify-center text-slate-500">
         <i className="fa-solid fa-users-slash text-5xl mb-4 text-slate-300" />
-        <h2 className="text-xl font-semibold mb-2">No products found</h2>
+        <h2 className="text-xl font-semibold mb-2">No orders found</h2>
       </div>
     );
   }
+
   return (
     <div
       id="product-table"
@@ -106,12 +107,11 @@ export const ProductTable = ({ products, onDeleteProduct }) => {
         {/* Desktop Table Header */}
         <thead className="hidden md:table-header-group">
           <tr>
-            {/* <th className="bg-[#721c24] p-4 text-left text-white">Image</th> */}
-            <th className="bg-[#721c24] p-4 text-left text-white">Image</th>
             <th className="bg-[#721c24] p-4 text-left text-white">Name</th>
-            <th className="bg-[#721c24] p-4 text-left text-white">Price</th>
+            <th className="bg-[#721c24] p-4 text-left text-white">Number</th>
+            <th className="bg-[#721c24] p-4 text-left text-white">Address</th>
+            <th className="bg-[#721c24] p-4 text-left text-white">Quantity</th>
             <th className="bg-[#721c24] p-4 text-left text-white">Status</th>
-            <th className="bg-[#721c24] p-4 text-left text-white">Description</th>
             <th className="w-[150px] bg-[#721c24] p-4 text-left text-white">
               Date
             </th>
@@ -122,71 +122,64 @@ export const ProductTable = ({ products, onDeleteProduct }) => {
         </thead>
         {/* Table Body */}
         <tbody className="block md:table-row-group">
-          {products.map((product) => (
-                        <tr
-              key={product._id}
-              onClick={() => navigate(`/product/${product._id}`)}
+          {orders.map((order) => (
+            <tr
+              key={order._id}
+              onClick={() => navigate(`/order/${order._id}`)}
               className="mb-4 block cursor-pointer rounded-lg border border-b-2 hover:bg-gray-50 dark:hover:bg-gray-500 even:bg-gray-50 dark:even:bg-gray-dark md:mb-0 md:table-row md:border-0 md:border-b dark:text-white"
             >
-              {/* Image Cell */}
-              <td className="flex items-center justify-between border-b border-gray-200 p-2 text-right md:table-cell md:p-4 md:text-left">
-                <span className="mr-4 font-semibold text-gray-700 md:hidden">
-                  Image
-                </span>
-                <img
-                  src={product.primaryImage}
-                  className="h-[50px] w-[50px] object-contain"
-                  alt={product.name}
-                />
-              </td> 
+
               {/* Data Cells with Mobile Labels */}
               <td className="flex items-center justify-between border-b border-gray-200 p-2 text-right md:table-cell md:p-4 md:text-left dark:text-white">
                 <span className="mr-4 font-semibold text-gray-700 md:hidden dark:text-white">
                   Name
                 </span>
-                {product.name}
+                {order.name}
               </td>
               <td className="flex items-center justify-between border-b border-gray-200 p-2 text-right md:table-cell md:p-4 md:text-left">
                 <span className="mr-4 font-semibold text-gray-700 md:hidden dark:text-white">
-                  Price
+                  Number
                 </span>
-                {product.discount}
+                {order.number}
+              </td>
+              <td className="flex items-center justify-between border-b border-gray-200 p-2 text-right md:table-cell md:p-4 md:text-left">
+                <span className="mr-4 font-semibold text-gray-700 md:hidden dark:text-white">
+                  Address
+                </span>
+                {order.address}
+              </td>
+              <td className="flex items-center justify-between border-b border-gray-200 p-2 text-right md:table-cell md:p-4 md:text-left">
+                <span className="mr-4 font-semibold text-gray-700 md:hidden dark:text-white">
+                  Quantity
+                </span>
+                {order.quantity}
               </td>
               <td className="flex items-center justify-between border-b border-gray-200 p-2 text-right md:table-cell md:p-4 md:text-left">
                 <span className="mr-4 font-semibold text-gray-700 md:hidden dark:text-white">
                   Status
                 </span>
-                {product.status}
-              </td>
-              <td className="flex items-center justify-between border-b border-gray-200 p-2 text-right md:table-cell md:p-4 md:text-left">
-                <span className="mr-4 font-semibold text-gray-700 md:hidden dark:text-white">
-                  Description
-                </span>
-                <p className="line-clamp-2">{product.description.slice(0, 50)}</p>
+                {order.status}
               </td>
               <td className="flex items-center justify-between border-b border-gray-200 p-2 text-right md:table-cell md:p-4 md:text-left">
                 <span className="mr-4 font-semibold text-gray-700 md:hidden dark:text-white">
                   Date
                 </span>
-                {formateDate(product.createdAt)}
+                {formateDate(order.createdAt)}
               </td>
               {/* Options/Buttons Cell */}
-              <td className="flex items-center justify-between p-2 text-right md:table-cell md:p-4 md:text-left">
+              <td className="flex items-center justify-between p-2 text-right md:table-cell md:p-4 md:text-left" onClick={(e) => e.stopPropagation()}>
                 <span className="mr-4 font-semibold text-gray-700 md:hidden dark:text-white">
                   Options
                 </span>
-                                <div
-                  className="flex flex-wrap gap-2"
-                  onClick={(e) => e.stopPropagation()}
-                >
+                <div className="flex flex-wrap gap-2">
                   <Link
-                    to={`/editProduct/${product._id}`}
+                    to={`/order/${order._id}`}
                     className="cursor-pointer rounded-full bg-green-100 py-1.5 px-3 text-sm font-medium capitalize text-green-800 transition hover:bg-green-200"
                   >
-                    Edit
+                    View
                   </Link>
                   <button
-                    onClick={() => handleDeleteRequest(product._id)}
+                    onClick={() => handleDeleteRequest(order._id)}
                     className="cursor-pointer rounded-full bg-red-100 py-1.5 px-3 text-sm font-medium capitalize text-red-800 transition hover:bg-red-200"
                   >
                     Delete

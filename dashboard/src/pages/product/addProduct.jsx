@@ -238,25 +238,21 @@ const CreateProduct = () => {
                             </div>
                             <FormField
                                 label="Price"
-                                type="number"
+                                type="text"
                                 name="price"
                                 value={formData.price}
                                 onChange={handleChange}
                                 placeholder="Enter product price"
                                 required={true}
-                                min="0"
-                                step="false"
                                 error={errors.price}
                             />
                             <FormField
                                 label="Discount price"
-                                type="number"
+                                type="text"
                                 name="discount"
                                 value={formData.discount}
                                 onChange={handleChange}
                                 placeholder="Enter discount price"
-                                min="0"
-                                step="0.01"
                                 error={errors.discount}
                             />
                             <FormField

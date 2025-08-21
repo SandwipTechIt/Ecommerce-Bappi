@@ -363,3 +363,34 @@ export const getProductBySlug = async (req, res) => {
     });
   }
 };
+
+export const getAllProductWithOrders = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findById(id).select("name price discount primaryImage");
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+    const orders = await Order.find({ productID: id });
+    const productWithOrders = {
+      ...product.toObject(),
+      orders,
+    };
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
+    const productWithImageUrls = {
+      ...productWithOrders,
+      primaryImage: getImageUrl(productWithOrders.primaryImage, baseUrl),
+    };
+    res.status(200).json(productWithImageUrls);
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch products",
+      error: error.message,
+    });
+  }
+};

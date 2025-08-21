@@ -46,13 +46,11 @@ const VariantForm = ({ variants, onChange, onAdd, onRemove }) => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   label="Size"
-                  type="number"
+                  type="text"
                   name={`variant-size-${index}`}
                   value={variant.size || ''}
                   onChange={(e) => handleVariantChange(index, 'size', e.target.value)}
                   placeholder="Enter size"
-                  min="0"
-                  step="0.1"
                 />
                 
                 <div className="mb-4">

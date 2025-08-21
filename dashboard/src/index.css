@@ -800,3 +800,21 @@ input:-webkit-autofill:active {
     -webkit-text-fill-color: inherit !important; /* Ensure text color matches */
     transition: background-color 5000s ease-in-out 0s; /* Hack to prevent background change */
 }
+
+/* Disable mouse wheel interaction on number inputs */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* For Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Hide the spinner in all browsers */
+input[type="number"] {
+  -webkit-appearance: none;
+  appearance: textfield;
+}

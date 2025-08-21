@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getApi } from "../api";
 import Loader from "../components/shared/Loader";
 import ErrorMessage from "../components/shared/ErrorMessage";
+
 export default function Home() {
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["staticData"],

@@ -1,6 +1,7 @@
 import Order from "../models/order.model.js";
 import Product from "../models/product.model.js";
 import Statics from "../models/statics.model.js";
+import Transaction from "../models/transaction.model.js";
 import { getImageUrl } from "../utils/imageUtils.js";
 
 export const createOrder = async (req, res) => {
@@ -22,22 +23,6 @@ export const createOrder = async (req, res) => {
     }
 
     const order = await Order.create(req.body);
-    const quantity = Number(order.quantity);
-    const totalPrice = Number(product.discount) * quantity;
-    await Statics.findOneAndUpdate(
-      {},
-      {
-        $inc: {
-          amount: totalPrice,
-          order: quantity,
-        },
-      },
-      {
-        upsert: true,
-        new: true,
-      }
-    );
-
     res.status(201).json(order);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -82,9 +67,60 @@ export const updateOrder = async (req, res) => {
   try {
     const order = await Order.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
+    }).populate({
+      path: "productID",
+      select: "name discount",
     });
+
+    console.log(order);
+
+    if (order?.status === "completed") {
+      const quantity = Number(order.quantity);
+      const totalPrice = Number(order.productID.discount) * quantity;
+      await Transaction.create({
+        title: order.productID.name,
+        amount: totalPrice,
+        type: "income",
+      });
+      await Statics.findOneAndUpdate(
+        {},
+        {
+          $inc: {
+            amount: totalPrice,
+            order: quantity,
+          },
+        },
+        {
+          upsert: true,
+          new: true,
+        }
+      );
+    }
+    if (order?.status === "pending" || order?.status === "cancelled") {
+      const quantity = Number(order.quantity);
+      const totalPrice = Number(order.productID.discount) * quantity;
+      await Transaction.create({
+        title: order.productID.name + " " + order.status,
+        amount: totalPrice,
+        type: "expense",
+      });
+      await Statics.findOneAndUpdate(
+        {},
+        {
+          $dec: {
+            amount: totalPrice,
+            order: quantity,
+          },
+        },
+        {
+          upsert: true,
+          new: true,
+        }
+      );
+    }
     res.status(200).json(order);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: error.message });
   }
 };

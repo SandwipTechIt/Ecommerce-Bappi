@@ -23,12 +23,14 @@ import adminRoutes from "./routes/admin.routes.js";
 import orderRoutes from "./routes/order.routes.js";
 import staticsRoutes from "./routes/statics.routes.js";
 import stocksRoutes from "./routes/stocks.routes.js";
+import transectionRoutes from "./routes/transection.routes.js";
 
 app.use(productRoutes);
 app.use(adminRoutes);
 app.use(orderRoutes);
 app.use(staticsRoutes);
 app.use(stocksRoutes);
+app.use(transectionRoutes);
 
 app.get("/test", (req, res) => {
   try {

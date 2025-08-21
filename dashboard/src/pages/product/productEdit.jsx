@@ -316,26 +316,23 @@ const ProductEdit = () => {
 
                             <FormField
                                 label="Price ($)"
-                                type="number"
+                                type="text"
                                 name="price"
                                 value={formData.price}
                                 onChange={handleChange}
-                                placeholder="0"
+                                placeholder="Enter price"
                                 required={true}
-                                min="0"
-                                step="false"
                                 error={errors.price}
                             />
                             <FormField
-                                label="Discount (%)"
-                                type="number"
+                                label="Discount price"
+                                type="text"
                                 name="discount"
                                 value={formData.discount}
                                 onChange={handleChange}
-                                placeholder="0"
+                                placeholder="Enter discount price"
                                 required={true}
-                                min="0"
-                                step="false"
+
                                 error={errors.discount}
                             />
                             <FormField

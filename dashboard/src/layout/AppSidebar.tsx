@@ -32,6 +32,14 @@ const navItems: NavItem[] = [
     ],
   },
   {
+    icon: "fas fa-money-bill-1",
+    name: "Transactions",
+    subItems: [
+      { name: "Add Transaction", path: "/addTransaction" },
+      { name: "All Transaction", path: "/transactions" },
+    ],
+  },
+  {
     icon: "fas fa-arrow-trend-up",
     name: "Stocks",
     path: "/stocks",
@@ -44,7 +52,7 @@ const othersItems: NavItem[] = [
     name: "Authentication",
     subItems: [
       { name: "Profile", path: "/profile" },
-      {name: "SignOut", path: "/signOut"}
+      { name: "SignOut", path: "/signOut" }
     ],
   },
 ];
@@ -242,7 +250,7 @@ const AppSidebar: React.FC = () => {
       >
         {
           !isExpanded && !isHovered ? (
-           <></>
+            <></>
           ) : (
             <Link to="/" className="text-2xl font-semibold text-gray-800 dark:text-white/90">
               <h1>Comforty</h1>

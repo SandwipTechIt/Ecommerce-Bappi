@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { formateDate } from "../../utiils/formateDate";
 const ConfirmDeleteModal = ({ onCancel, onConfirm }) => {
   useEffect(() => {
@@ -73,6 +73,7 @@ const ConfirmDeleteModal = ({ onCancel, onConfirm }) => {
 
 export const OrderTable = ({ orders, onDeleteOrder }) => {
   const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const navigate = useNavigate();
   const handleDeleteRequest = (productId) => {
     setDeleteConfirm(productId);
   };
@@ -125,7 +126,8 @@ export const OrderTable = ({ orders, onDeleteOrder }) => {
           {orders.map((order) => (
             <tr
               key={order._id}
-              className="mb-4 block rounded-lg border border-b-2 hover:bg-gray-50 dark:hover:bg-gray-500 even:bg-gray-50 dark:even:bg-gray-dark md:mb-0 md:table-row md:border-0 md:border-b dark:text-white"
+              onClick={() => navigate(`/order/${order._id}`)}
+              className="mb-4 cursor-pointer block rounded-lg border border-b-2 hover:bg-gray-50 dark:hover:bg-gray-500 even:bg-gray-50 dark:even:bg-gray-dark md:mb-0 md:table-row md:border-0 md:border-b dark:text-white"
             >
               {/* Image Cell */}
               <td className="flex items-center justify-between border-b border-gray-200 p-2 text-right md:table-cell md:p-4 md:text-left">
@@ -176,7 +178,7 @@ export const OrderTable = ({ orders, onDeleteOrder }) => {
                 {formateDate(order.createdAt)}
               </td>
               {/* Options/Buttons Cell */}
-              <td className="flex items-center justify-between p-2 text-right md:table-cell md:p-4 md:text-left">
+              <td className="flex items-center justify-between p-2 text-right md:table-cell md:p-4 md:text-left cursor-pointer" onClick={(e)=>e.stopPropagation()}>
                 <span className="mr-4 font-semibold text-gray-700 md:hidden dark:text-white">
                   Options
                 </span>

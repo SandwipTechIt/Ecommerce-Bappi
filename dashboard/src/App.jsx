@@ -13,8 +13,11 @@ import AllProducts from "./pages/product/showProducts";
 import AddProduct from "./pages/product/addProduct";
 import ProductEdit from "./pages/product/productEdit";
 import AllOrders from "./pages/order/showOrders";
+import ProductDetails from "./pages/product/productDetails";
 import ViewOrder from "./pages/order/viewOrder";
 import AllStocks from "./pages/stocks/allStocks";
+import Transaction from "./pages/transaction/transaction";
+import AddTransaction from "./pages/transaction/addTransaction";
 
 export default function App() {
   const { state } = setContext();
@@ -34,7 +37,10 @@ export default function App() {
                 <Route path="/editProduct/:id" element={<ProductEdit />} />
                 <Route path="/orders" element={<AllOrders />} />
                 <Route path="/order/:id" element={<ViewOrder />} />
+                <Route path="/product/:id" element={<ProductDetails />} />
                 <Route path="/stocks" element={<AllStocks />} />
+                <Route path="/transactions" element={<Transaction />} />
+                <Route path="/addTransaction" element={<AddTransaction />} />
               </Route>
 
               {/* Auth Layout */}
