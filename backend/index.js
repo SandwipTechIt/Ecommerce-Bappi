@@ -5,6 +5,7 @@ const PORT = process.env.PORT || 3000;
 import connectDB from "./config/db.js";
 import cors from "cors";
 
+app.set("trust proxy", true);
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -31,20 +32,6 @@ app.use(orderRoutes);
 app.use(staticsRoutes);
 app.use(stocksRoutes);
 app.use(transectionRoutes);
-
-app.get("/test", (req, res) => {
-  try {
-    // res.status(200).json({
-    //     success: true,
-    //     message: "Test passed",
-    //     data: "Hello, Shorif Art Backend!",
-    // });
-    throw new Error("Test failed");
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: error.message });
-  }
-});
 
 app.use((err, req, res, next) => {
   const errorStatus = err.status || 500;
