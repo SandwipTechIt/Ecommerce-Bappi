@@ -31,9 +31,9 @@ import AllCoupons from "./pages/coupon/showAllCoupon";
 import EditCoupon from "./pages/coupon/editCoupon";
 import Courier from "./pages/courier/courier";
 
-import OrdersByStatus from "./pages/order/ordersByStatus.jsx";
+import OrdersByStatus from "./pages/order/ordersByStatus";
 import ShowAllMessage from "./pages/message/showAllMessage";
-import EditMessage from "./pages/message/editMessage.jsx";
+import EditMessage from "./pages/message/editMessage";
 
 export default function App() {
   const { state } = setContext();
