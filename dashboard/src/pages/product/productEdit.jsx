@@ -10,7 +10,7 @@ import ErrorMessage from '../../components/product/ErrorMessage';
 import { getApi, putApi } from '../../api';
 import { useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
-import { LoadingSpinner } from '../../components/Ui/Loader';
+import Loader from '../../components/shared/Loader';
 
 const ProductEdit = () => {
     const navigate = useNavigate();
@@ -278,7 +278,7 @@ const ProductEdit = () => {
     }, [id]);
 
     if (isLoading || categoriesLoading) {
-        return <LoadingSpinner />
+        return <Loader />
     }
 
     if (categoryError) {
