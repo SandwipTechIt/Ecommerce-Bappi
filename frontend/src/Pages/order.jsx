@@ -64,7 +64,9 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import { getApi, postApi } from '../api';
 import OrderForm from '../Components/order/OrderForm';
+import ShippingChargeSelector from '../Components/order/courier';
 import OrderSummary from '../Components/order/OrderSummary';
+import CouponValidator from '../Components/order/coupon';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { WhatsAppIcon } from '../constants/icons';
 
@@ -74,6 +76,8 @@ const Order = () => {
 
     /* ---------- local state ---------- */
     const [size, setSize] = useState(state?.size || '');
+    const [selectedCourier, setSelectedCourier] = useState(null);
+    const [appliedCoupon, setAppliedCoupon] = useState(null);
     const [quantity, setQuantity] = useState(state?.quantity || 1);
     const [alert, setAlert] = useState({
         isOpen: false,
@@ -102,14 +106,53 @@ const Order = () => {
         },
     });
 
+    const { data: courier, isLoading: courierLoading, error: courierError } = useQuery({
+        queryKey: ['courier'],
+        refetchOnMount: 'always',
+        refetchOnWindowFocus: true,
+        queryFn: () => getApi(`/getCourier`),
+    });
+
 
     /* ---------- handlers ---------- */
+    const handleCourierSelect = (courier) => {
+        setSelectedCourier(courier);
+    };
+
+    const handleCouponApply = (coupon) => {
+        setAppliedCoupon(coupon);
+    };
+
     const handlePlaceOrder = async () => {
         if (!formData.name || !formData.number || !formData.address) {
             setAlert({
                 isOpen: true,
                 type: 'error',
                 message: 'Please fill all the fields',
+            });
+            return;
+        }
+        if (!/^(\+?88)?01[3-9]\d{8}$/.test(formData.number)) {
+            setAlert({
+                isOpen: true,
+                type: 'error',
+                message: 'Invalid phone number',
+            });
+            return;
+        }
+        if (formData.address.length < 15) {
+            setAlert({
+                isOpen: true,
+                type: 'error',
+                message: 'Please write address in details',
+            });
+            return;
+        }
+        if (courier?.data?.isActive && !selectedCourier) {
+            setAlert({
+                isOpen: true,
+                type: 'error',
+                message: 'Please select a courier',
             });
             return;
         }
@@ -127,6 +170,17 @@ const Order = () => {
                 productID: product._id,
                 size,
                 quantity,
+                courier: selectedCourier ? {
+                    id: selectedCourier._id,
+                    name: selectedCourier.name,
+                    fee: selectedCourier.fee
+                } : null,
+                coupon: appliedCoupon ? {
+                    code: appliedCoupon.code,
+                    discountType: appliedCoupon.discountType,
+                    discountValue: appliedCoupon.discountValue,
+                    discountAmount: appliedCoupon.discountAmount
+                } : null
             };
             await postApi('createOrder', payload);
             setFormData({
@@ -135,6 +189,8 @@ const Order = () => {
                 address: '',
                 note: '',
             });
+            setSelectedCourier(null);
+            setAppliedCoupon(null);
             setAlert({
                 isOpen: true,
                 type: 'success',
@@ -153,11 +209,15 @@ const Order = () => {
         window.open(`https://wa.me/8801560044236?text=I%20want%20to%20order%20${product.name}`, '_blank');
     };
     /* ---------- early returns ---------- */
-    if (loading) return <p className="text-center p-8">Loading product…</p>;
-    if (error) return <p className="text-center text-red-600 p-8">{error?.message}</p>;
-    if (!product) return null;
+    if (loading || courierLoading) return <p className="text-center p-8">Loading product…</p>;
+    if (error || courierError) return <p className="text-center text-red-600 p-8">{error?.message}</p>;
+    if (!product || !courier) return null;
 
-    const totalCost = product.discount * quantity;
+    // Calculate pricing
+    const subtotal = product.discount * quantity;
+    const shippingCost = selectedCourier?.fee || 0;
+    const discountAmount = appliedCoupon?.discountAmount || 0;
+    const totalCost = subtotal + shippingCost - discountAmount;
 
     return (
         <section className='heroBg'>
@@ -167,6 +227,12 @@ const Order = () => {
                     <section className='order-2 md:order-1'>
                         <h2 className="text-2xl font-bold mb-4 text-center md:text-left">Shipping Info</h2>
                         <OrderForm formData={formData} onChange={setFormData} />
+                        <ShippingChargeSelector data={courier?.data} onSelect={handleCourierSelect} />
+                        <CouponValidator
+                            subtotal={subtotal}
+                            onCouponApply={handleCouponApply}
+                            appliedCoupon={appliedCoupon}
+                        />
                         <div className="hidden md:block">
                             {
                                 product.isStock
@@ -238,6 +304,9 @@ const Order = () => {
                                 quantity={quantity}
                                 setSize={setSize}
                                 setQuantity={setQuantity}
+                                subtotal={subtotal}
+                                shippingCost={shippingCost}
+                                discountAmount={discountAmount}
                                 totalCost={totalCost}
                             />
                         </div>

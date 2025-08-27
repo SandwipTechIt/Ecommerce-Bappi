@@ -128,7 +128,8 @@ const StockManagement = () => {
             </div>
         );
     }
-
+    console.log(stocks);
+    
     // Empty state
     if (!stocks || stocks.length === 0) {
         return (
@@ -173,7 +174,7 @@ const StockManagement = () => {
                                         {stock?.primaryImage ? (
                                             <img 
                                                 src={stock.primaryImage} 
-                                                alt={stock.productID.name}
+                                                alt={stock.name}
                                                 className="h-full w-full object-cover"
                                             />
                                         ) : (
@@ -183,7 +184,7 @@ const StockManagement = () => {
                                         )}
                                     </div>
                                     <div className="ml-4">
-                                        <h3 className="text-lg font-medium text-gray-900 dark:text-white">{stock.productID.name}</h3>
+                                        <h3 className="text-lg font-medium text-gray-900 dark:text-white">{stock.name}</h3>
                                         <div className="mt-2 flex items-center">
                                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                                                 stock.stock > 5 ? 'bg-green-100 text-green-800' :

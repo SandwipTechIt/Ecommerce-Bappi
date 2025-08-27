@@ -43,17 +43,21 @@ export default ({ product }) => {
                             <h3 className="text-lg font-bold text-gray-800 line-clamp-2 mb-1 min-h-[2.5em]">
                                 {product.name}
                             </h3>
-                            <p className="text-sm text-gray-600 line-clamp-2 mb-3 min-h-[2.5em]">
-                                {product.description}
-                            </p>
+                                <p className="text-sm text-gray-600 line-clamp-2 mb-3 min-h-[2.5em]">
+                                    {product.description}
+                                </p>
                         </div>
 
                         <div>
                             <div className="flex items-center gap-2 mb-3  flex-wrap">
-                                <del className="text-gray-500">
-                                    <span className="">৳</span>
-                                    {product.price}
-                                </del>
+                                {
+                                    product.price && (
+                                        <del className="text-gray-500">
+                                        <span className="">৳</span>
+                                        {product.price}
+                                    </del>
+                                    )
+                                }
                                 <p className="text-xl font-extrabold text-green-600">
                                     <SvgIcon className="md:inline-block align-baseline hidden " />
                                     <span className="md:hidden inline-block ">৳ </span>

@@ -5,7 +5,7 @@ import Transaction from "../models/transaction.model.js";
 import { getImageUrl } from "../utils/imageUtils.js";
 
 export const createOrder = async (req, res) => {
-  const { number, productID, size } = req.body;
+  const { number, productID, size, quantity, courier, coupon } = req.body;
   try {
     const product = await Product.findById(productID);
     if (!product) {
@@ -22,8 +22,36 @@ export const createOrder = async (req, res) => {
       return res.status(400).json({ error: "Order already exists" });
     }
 
-    const order = await Order.create(req.body);
-    res.status(201).json(order);
+    // Calculate pricing
+    const subtotal = product.discount * quantity;
+    const shippingCost = courier?.fee || 0;
+    const discountAmount = coupon?.discountAmount || 0;
+    const totalAmount = subtotal + shippingCost - discountAmount;
+
+    // Create order with all data
+    const orderData = {
+      ...req.body,
+      subtotal,
+      shippingCost,
+      discountAmount,
+      totalAmount,
+      courier: courier ? {
+        id: courier.id,
+        name: courier.name,
+        fee: courier.fee
+      } : undefined,
+      coupon: coupon ? {
+        code: coupon.code,
+        discountType: coupon.discountType,
+        discountValue: coupon.discountValue,
+        discountAmount: coupon.discountAmount
+      } : undefined
+    };
+
+    const order = await Order.create(orderData);
+    res.status(201).json({
+      message: "Order created successfully",
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -63,6 +91,31 @@ export const getOrder = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+
+export const getOrderByStatus = async (req, res) => {
+  const { status } = req.params;
+
+  try {
+    const orders = await Order.find({status}).sort({ createdAt: -1 }).populate({
+      path: "productID",
+      select: "primaryImage",
+    });
+
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
+    const ordersWithImageUrls = orders.map((order) => ({
+      ...order.toObject(),
+      primaryImage: getImageUrl(order.productID.primaryImage, baseUrl),
+    }));
+    res.status(200).json(ordersWithImageUrls);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
+
+
 export const updateOrder = async (req, res) => {
   try {
     const order = await Order.findByIdAndUpdate(req.params.id, req.body, {
@@ -75,19 +128,17 @@ export const updateOrder = async (req, res) => {
     console.log(order);
 
     if (order?.status === "completed") {
-      const quantity = Number(order.quantity);
-      const totalPrice = Number(order.productID.discount) * quantity;
       await Transaction.create({
         title: order.productID.name,
-        amount: totalPrice,
+        amount: order.totalAmount,
         type: "income",
       });
       await Statics.findOneAndUpdate(
         {},
         {
           $inc: {
-            amount: totalPrice,
-            order: quantity,
+            amount: order.totalAmount,
+            order: order.quantity,
           },
         },
         {
@@ -96,20 +147,18 @@ export const updateOrder = async (req, res) => {
         }
       );
     }
-    if (order?.status === "pending" || order?.status === "cancelled") {
-      const quantity = Number(order.quantity);
-      const totalPrice = Number(order.productID.discount) * quantity;
+    if (order?.status === "cancelled") {
       await Transaction.create({
         title: order.productID.name + " " + order.status,
-        amount: totalPrice,
+        amount: order.totalAmount,
         type: "expense",
       });
       await Statics.findOneAndUpdate(
         {},
         {
-          $dec: {
-            amount: totalPrice,
-            order: quantity,
+          $inc: {
+            amount: -order.totalAmount,
+            order: -order.quantity,
           },
         },
         {

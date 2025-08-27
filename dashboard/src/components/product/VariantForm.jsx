@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import FormField from './FormField';
 
-const VariantForm = ({ variants, onChange, onAdd, onRemove }) => {
+const VariantForm = ({ variants, onChange, onAdd, onRemove, error }) => {
   const handleVariantChange = (index, field, value) => {
     const updatedVariants = [...variants];
     updatedVariants[index] = {
@@ -27,9 +27,9 @@ const VariantForm = ({ variants, onChange, onAdd, onRemove }) => {
       {variants.length === 0 ? (
         <p className="text-sm text-gray-500 italic">No variants added yet. Click "Add Variant" to add one.</p>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-4 grid grid-cols-1 md:grid-cols-2 gap-4 ">
           {variants.map((variant, index) => (
-            <div key={index} className="border border-gray-200 rounded-lg p-4">
+            <div key={index} className="border-2 border-dashed border-[#00BCD4] m-0 rounded-lg p-4">
               <div className="flex justify-between items-start mb-3">
                 <h4 className="text-md font-medium text-gray-800 dark:text-white">Variant #{index + 1}</h4>
                 {variants.length > 1 && (
@@ -41,9 +41,10 @@ const VariantForm = ({ variants, onChange, onAdd, onRemove }) => {
                     <i className="fas fa-trash"></i>
                   </button>
                 )}
+                {error?.length > 0 && <p className="text-red-500 mt-1">{error[index]?.size}</p>}
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4 items-center">
                 <FormField
                   label="Size"
                   type="text"

@@ -6,13 +6,17 @@ const ProductSchema = new mongoose.Schema({
     name: { type: String, required: true },
     slug: { type: String, unique: true, index: true },
     description: String,
-    // categories: { type: mongoose.Schema.Types.ObjectId, ref: 'categories', index: true },
-    price: { type: Number, required: true, min: 0 },
-    discount: { type: Number, default: 0, min: 0 },
+    category: { type: String },
+    price: { type: Number, min: 0 },
+    discount: { type: Number, default: 0, required: true, min: 0 },
     isStock: { type: Boolean, default: true },
+    stock: { type: Number, default: 0, min: 0 },
     variants: [{
         size: Number,
         stock: { type: Boolean, default: true }
+    }],
+    colors: [{
+        type: String,
     }],
     primaryImage: {
         type: String,

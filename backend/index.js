@@ -7,8 +7,8 @@ import cors from "cors";
 
 app.set("trust proxy", true);
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
 // Serve static files from the images directory
 app.use("/images", express.static("images"));
@@ -25,6 +25,10 @@ import orderRoutes from "./routes/order.routes.js";
 import staticsRoutes from "./routes/statics.routes.js";
 import stocksRoutes from "./routes/stocks.routes.js";
 import transectionRoutes from "./routes/transection.routes.js";
+import categoryRoutes from "./routes/category.routes.js";
+import couponRoutes from "./routes/coupon.routes.js";
+import courierRoutes from "./routes/courier.routes.js";
+import messageRoutes from "./routes/message.routes.js";
 
 app.use(productRoutes);
 app.use(adminRoutes);
@@ -32,6 +36,10 @@ app.use(orderRoutes);
 app.use(staticsRoutes);
 app.use(stocksRoutes);
 app.use(transectionRoutes);
+app.use(categoryRoutes);
+app.use(couponRoutes);
+app.use(courierRoutes);
+app.use(messageRoutes);
 
 app.use((err, req, res, next) => {
   const errorStatus = err.status || 500;

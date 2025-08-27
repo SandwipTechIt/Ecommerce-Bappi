@@ -75,7 +75,7 @@ const SvgIcon = ({ className = '', ...props }) => (
   </svg>
 );
 
-const OrderSummary = ({ product, size, setSize, quantity, setQuantity, totalCost }) => {
+const OrderSummary = ({ product, size, setSize, quantity, setQuantity, subtotal, shippingCost, discountAmount, totalCost }) => {
   return (
     <div className="border border-gray-200 rounded p-4 space-y-4">
       <img
@@ -105,12 +105,37 @@ const OrderSummary = ({ product, size, setSize, quantity, setQuantity, totalCost
             {product.discount}
           </span>
         </div>
-
       </div>
 
-      <div className="text-right text-xl font-bold flex items-center justify-end self-end">
-        <span className="mr-0.5">Total:</span> <SvgIcon className="md:inline-block align-middle hidden w-5 h-5" />
-        <span className="md:hidden inline-block align-middle text-2xl mr-0.5">৳</span>{totalCost}
+      {/* Pricing Breakdown */}
+      <div className="border-t pt-4 space-y-2">
+        <div className="flex justify-between text-sm">
+          <span>Subtotal ({quantity} items):</span>
+          <span>৳{subtotal}</span>
+        </div>
+        
+        {shippingCost > 0 && (
+          <div className="flex justify-between text-sm">
+            <span>Shipping:</span>
+            <span>৳{shippingCost}</span>
+          </div>
+        )}
+        
+        {discountAmount > 0 && (
+          <div className="flex justify-between text-sm text-green-600">
+            <span>Discount:</span>
+            <span>-৳{discountAmount}</span>
+          </div>
+        )}
+        
+        <div className="border-t pt-2 flex justify-between text-xl font-bold">
+          <span>Total:</span>
+          <span className="flex items-center">
+            <SvgIcon className="md:inline-block align-middle hidden w-5 h-5" />
+            <span className="md:hidden inline-block align-middle text-2xl mr-0.5">৳</span>
+            {totalCost}
+          </span>
+        </div>
       </div>
     </div>
   );

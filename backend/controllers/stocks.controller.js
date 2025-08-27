@@ -1,25 +1,16 @@
-import Stock from "../models/stocks.model.js";
+import Product from "../models/product.model.js";
 import { getImageUrl } from "../utils/imageUtils.js";
-export const createStock = async (ID, number) => {
-  try {
-    const stock = await Stock.create({ productID: ID, stock: number });
-    return stock;
-  } catch (error) {
-    console.error("Error creating stock:", error);
-  }
-};
+
+
 
 export const getAllStocks = async (req, res) => {
   try {
-    const stocks = await Stock.find().sort({ createdAt: -1 }).populate({
-      path: "productID",
-      select: "name primaryImage",
-    });
+    const stocks = await Product.find().sort({ createdAt: -1 }).select("name stock primaryImage");
 
     const baseUrl = `${req.protocol}://${req.get("host")}`;
     const stocksWithImageUrls = stocks.map((stock) => ({
       ...stock.toObject(),
-      primaryImage: getImageUrl(stock.productID.primaryImage, baseUrl),
+      primaryImage: getImageUrl(stock.primaryImage, baseUrl),
     }));
     res.status(200).json(stocksWithImageUrls);
   } catch (error) {
@@ -56,11 +47,25 @@ export const getStock = async (req, res) => {
     });
   }
 };
+
 export const updateStock = async (req, res) => {
   const { stock } = req.body;
+  console.log(stock);
+
   try {
     // Update stock in database
-    const stockData = await Stock.findByIdAndUpdate(
+
+    const product = await Product.findById(req.params.id)
+    if (!product) {
+      return res.status(500).json({
+        success: false,
+        message: "No Product Found",
+        error: error.message,
+      });
+    }
+    // const newProduct = product;
+    // newProduct.stock = stock;
+    const stockData = await Product.findByIdAndUpdate(
       req.params.id, // id (string or ObjectId)
       { stock: stock }, // use update operators (avoid full replacement)
       { new: true } // return the updated document
@@ -76,6 +81,8 @@ export const updateStock = async (req, res) => {
     });
   }
 };
+
+
 export const deleteStock = async (ID) => {
   try {
     // Validate required fields

@@ -5,6 +5,7 @@ import Hero from '../Components/home/hero';
 import Features from '../Components/home/features';
 // const Hero = lazy(() => import('../Components/home/hero'));
 const ProductSection = lazy(() => import('../Components/home/productSection'));
+const Categories = lazy(() => import('../Components/home/categories'));
 
 
 import { getApi } from '../api';
@@ -29,12 +30,22 @@ export default () => {
         },
     });
 
+    useQuery({
+        queryKey: ['categories'],
+        queryFn: () => getApi('getAllCategories'),
+        refetchOnMount: 'always',
+        refetchOnWindowFocus: true,
+    });
+
 
     return (
         <div>
             <Hero />
             <Suspense fallback={<LoadingSpinner />}>
-                <ProductSection />
+                <div className='container mx-auto'>
+                    <Categories />
+                    <ProductSection />
+                </div>
             </Suspense>
             <Features />
         </div>

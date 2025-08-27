@@ -22,6 +22,7 @@ const navItems: NavItem[] = [
     subItems: [
       { name: "Add Product", path: "/addProduct" },
       { name: "All Product", path: "/allProducts" },
+      { name: "Stock Out Product", path: "/stockOutProducts" },
     ],
   },
   {
@@ -29,20 +30,49 @@ const navItems: NavItem[] = [
     icon: "fas fa-cart-plus",
     subItems: [
       { name: "All Order", path: "/orders" },
+      { name: "Pending Order", path: "/orders/pending" },
+      { name: "Completed Order", path: "/orders/completed" },
+      { name: "Cancelled Order", path: "/orders/cancelled" },
     ],
   },
   {
-    icon: "fas fa-money-bill-1",
+    name: "Category",
+    icon: "fas fa-table-cells-large",
+    subItems: [
+      { name: "All Category", path: "/allCategories" },
+      { name: "Add Category", path: "/addCategory" },
+    ],
+  },
+  {
     name: "Transactions",
+    icon: "fas fa-money-bill-1",
     subItems: [
       { name: "Add Transaction", path: "/addTransaction" },
       { name: "All Transaction", path: "/transactions" },
     ],
   },
   {
-    icon: "fas fa-arrow-trend-up",
+    name: "Coupons",
+    icon: "fas fa-tag",
+    subItems: [
+      { name: "Add Coupon", path: "/addCoupon" },
+      { name: "All Coupon", path: "/allCoupon" },
+    ],
+  },
+  {
+    name: "Courier",
+    icon: "fas fa-shipping-fast",
+    path: "/courier",
+  },
+  {
     name: "Stocks",
+    icon: "fas fa-arrow-trend-up",
     path: "/stocks",
+  },
+  {
+    name: "Messages",
+    icon: "fas fa-message",
+    path: "/messages",
   },
 ];
 

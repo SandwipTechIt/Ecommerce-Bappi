@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { LoadingSpinner } from '../Components/Ui/Loader';
 import { getApi } from '../api';
@@ -17,11 +17,11 @@ const ProductImages = ({ product, selectedImage, setSelectedImage }) => {
   return (
     <div className="md:w-1/2 p-2 md:p-4 lg:p-6">
       {/* Main image */}
-      <div className="relative bg-white rounded-lg overflow-hidden aspect-w-1 aspect-h-1">
+      <div className="relative h-[400px] rounded-lg overflow-hidden aspect-w-1 aspect-h-1 bg-white">
         <img
           src={selectedImage || product.primaryImage || product.images?.[0] || '/placeholder.png'}
           alt={product.name || 'Product'}
-          className="w-full h-full max-h-[400px] object-contain"
+          className="w-full h-full  object-cover"
           loading="eager"
           decoding="async"
           draggable={false}
@@ -71,7 +71,9 @@ const ProductInfo = ({ product }) => {
       <div className="flex gap-2 items-center">
         <p className="m-0 flex items-center font-bold text-gray-900 px-2 py-1 rounded">
 
-          <del className="text-gray-500 mr-2">৳{product.price}</del>
+          {product.price && (
+            <del className="text-gray-500 mr-2">৳{product.price}</del>
+          )}
 
           <SvgIcon className="md:inline-block align-middle mr-1 hidden" />
           <span className="md:hidden inline-block align-middle text-2xl mr-1">৳ </span>
@@ -208,6 +210,7 @@ const SvgIcon = ({ className = '', ...props }) => (
 // Main ProductDetails Component
 const ProductDetails = () => {
   const { slug } = useParams();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const { data: product, isLoading, isError, error } = useQuery({
@@ -221,6 +224,7 @@ const ProductDetails = () => {
       const list = queryClient.getQueryData(['productWithDetails']);
       return Array.isArray(list) ? list.find(p => String(p.slug) === String(slug)) : undefined;
     },
+    retry: 1
   });
 
   const [selectedImage, setSelectedImage] = useState(null);
@@ -249,13 +253,12 @@ const ProductDetails = () => {
   const handleSizeSelect = (size) => setSelectedSize(size);
 
   // Show spinner only if we don't even have cached data
-  if (isLoading && !product) return <LoadingSpinner />;
+  if (isLoading && !product) return <div className="flex items-center justify-center h-screen"><LoadingSpinner /></div>
   // If API failed but we have cached product, continue rendering with it
-  if (isError && !product) return (
-    <div className="p-6">
-      <p className="text-red-600">Failed to load product: {error?.message ?? 'Unknown error'}</p>
-    </div>
-  );
+  if (isError && !product) {
+    navigate('/not-found')
+    return
+  }
   if (!product) return (
     <div className="p-6">
       <p className="text-gray-700">Product not found.</p>

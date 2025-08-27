@@ -1,9 +1,9 @@
-import { LoadingSpinner } from "../Components/Ui/Loader";
+import NotFound from "../Components/Ui/notFound";
 
 export default () => {
     return (
-        <div>
-            <LoadingSpinner />
+        <div className="flex justify-center items-center heroBg">
+            <NotFound />
         </div>
     )
 }

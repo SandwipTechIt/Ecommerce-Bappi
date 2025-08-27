@@ -29,8 +29,8 @@ export default () => {
 
     return (
         <section className="w-full bg-white ">
-            <div className="w-full ">
-                <h2 className="text-2xl font-bold mb-4 text-center py-6">All Products</h2>
+            <div className="w-full py-6">
+                {/* <h2 className="text-2xl font-bold mb-4 text-center ">All Products</h2> */}
                 <div className="products container m-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-1 gap-y-2 md:gap-6 place-items-center w-full ">
                     {products.map((product) => (
                         <ProductCard key={product._id} product={product} />

@@ -17,8 +17,8 @@ export default function FeaturesSection() {
     const features = [
         {
             icon: <TruckIcon className="w-9 h-9" fill="#e75c3a" />,
-            title: "Free Shipping",
-            description: "Free shipping on all orders. Fast and reliable delivery."
+            title: "Fast Shipping",
+            description: "Get your items faster. We offer quick and reliable delivery on all orders"
         },
         {
             icon: <UndoIcon className="w-9 h-9" fill="#e75c3a" />,

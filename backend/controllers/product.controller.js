@@ -5,22 +5,76 @@ import {
   deleteMultipleImages,
   getImageUrl,
 } from "../utils/imageUtils.js";
-import { createStock, deleteStock } from "./stocks.controller.js";
+
+
+function getProductsData() {
+  const products = [];
+  const timestamp = Date.now();
+  
+  for (let i = 1; i <= 11; i++) {
+    // Create multiple images array for better handling
+    const additionalImages = [];
+    
+    // Add second image if it exists
+    if (i <= 11) { // Assuming you have images up to 11
+      additionalImages.push(`${i} (2).jpg`);
+    }
+    
+    products.push({
+      "name": `Breathable Sports Soft Sole Shoe ${i}`,
+      "description": "Crafted with a lightweight, breathable upper, this shoe keeps your feet cool and dry, no matter how intense your workout gets. The flexible, soft sole provides a cushioned feel and excellent shock absorption, reducing impact on your joints and letting you move with natural ease. Whether you're running, training, or just on your feet all day, you'll experience superior comfort and support.",
+      "category": "Casual",
+      "price": 2800,
+      "discount": 2000,
+      "isStock": true,
+      "stock": 0,
+      "variants": [
+        {
+          "size": 34,
+          "stock": true,
+        },
+        {
+          "size": 35,
+          "stock": true,
+        },
+        {
+          "size": 36,
+          "stock": true,
+        },
+        {
+          "size": 37,
+          "stock": true,
+        }
+      ],
+      "colors": [
+        "#000000",
+        "#ff007b",
+        "#eb2d2d",
+        "white"
+      ],
+      "primaryImage": `${i} (1).jpg`,
+      "images": additionalImages,
+      "status": "limited stock",
+      "slug": `breathable-sports-soft-sole-shoe-${i}-${timestamp}`
+    });
+  }
+  return products;
+}
 
 export const createProduct = async (req, res) => {
   try {
-    const { name, description, categories, price, discount, variants, status } =
+    const { name, description, category, price, discount, variants, colors, status, isStock, stock } =
       req.body;
 
     // Validate required fields
-    if (!name || !price) {
+    if (!name || !discount) {
       // Clean up uploaded files if validation fails
       if (req.files) {
         await cleanupUploadedFiles(req.files);
       }
       return res.status(400).json({
         success: false,
-        message: "Name and price are required fields",
+        message: "Name and discount price are required fields",
       });
     }
 
@@ -44,9 +98,11 @@ export const createProduct = async (req, res) => {
     const productData = {
       name,
       description,
-      categories,
-      price: parseFloat(price),
-      discount: discount ? parseFloat(discount) : 0,
+      category,
+      price: price ? parseInt(price) : 0,
+      discount: parseInt(discount),
+      isStock: isStock !== undefined ? isStock : true,
+      stock: stock ? parseInt(stock) : 0,
       status: status,
     };
 
@@ -60,6 +116,20 @@ export const createProduct = async (req, res) => {
         return res.status(400).json({
           success: false,
           message: "Invalid variants format",
+        });
+      }
+    }
+
+    // Handle colors if provided
+    if (colors) {
+      try {
+        productData.colors =
+          typeof colors === "string" ? JSON.parse(colors) : colors;
+      } catch (error) {
+        await cleanupUploadedFiles(req.files);
+        return res.status(400).json({
+          success: false,
+          message: "Invalid colors format",
         });
       }
     }
@@ -82,9 +152,6 @@ export const createProduct = async (req, res) => {
       primaryImage: getImageUrl(product.primaryImage, baseUrl),
       images: product.images.map((img) => getImageUrl(img, baseUrl)),
     };
-
-    await createStock(product._id, 1);
-
     res.status(201).json({
       success: true,
       message: "Product created successfully",
@@ -121,7 +188,6 @@ export const deleteProduct = async (req, res) => {
     }
 
     const OrderDlete = await Order.deleteMany({ productID: id });
-    const Stock = await deleteStock(product._id);
     // Collect all image filenames for deletion
     const imagesToDelete = [];
     if (product.primaryImage) {
@@ -155,6 +221,15 @@ export const deleteProduct = async (req, res) => {
 
 export const getAllProducts = async (req, res) => {
   try {
+    // // Check if sample products already exist
+    // const existingProductsCount = await Product.countDocuments();
+    
+    // // Only insert sample data if no products exist
+    // if (existingProductsCount === 0) {
+    //   const productsData = getProductsData();
+    //   await Product.insertMany(productsData);
+    // }
+
     const products = await Product.find()
       .sort({ createdAt: -1 })
       .select("-images -__v -variants -categories -updatedAt");
@@ -177,9 +252,58 @@ export const getAllProducts = async (req, res) => {
     });
   }
 };
+export const stockOutProducts = async (req, res) => {
+  try {
+    const products = await Product.find({ isStock: false })
+      .sort({ createdAt: -1 })
+      .select("-images -__v -variants -categories -updatedAt");
+
+    // Add full image URLs to response
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
+    const productsWithImageUrls = products.map((product) => ({
+      ...product.toObject(),
+      primaryImage: getImageUrl(product.primaryImage, baseUrl),
+      // images: product.images.map(img => getImageUrl(img, baseUrl))
+    }));
+
+    res.status(200).json(productsWithImageUrls);
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch products",
+      error: error.message,
+    });
+  }
+};
+
 export const getAllProductsWithDetails = async (req, res) => {
   try {
     const products = await Product.find()
+      .sort({ createdAt: -1 })
+      .select("-__v -updatedAt");
+
+    // Add full image URLs to response
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
+    const productsWithImageUrls = products.map((product) => ({
+      ...product.toObject(),
+      primaryImage: getImageUrl(product.primaryImage, baseUrl),
+      images: product.images.map((img) => getImageUrl(img, baseUrl)),
+    }));
+
+    res.status(200).json(productsWithImageUrls);
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch products",
+      error: error.message,
+    });
+  }
+};
+export const getAllProductsByCategory = async (req, res) => {
+  try {
+    const products = await Product.find({ category: req.params.id })
       .sort({ createdAt: -1 })
       .select("-__v -updatedAt");
 
@@ -208,12 +332,15 @@ export const updateProduct = async (req, res) => {
     const {
       name,
       description,
+      category,
       price,
       discount,
       variants,
+      colors,
       status,
       imagesToDelete,
       isStock,
+      stock,
     } = req.body;
 
     const product = await Product.findById(id);
@@ -262,14 +389,20 @@ export const updateProduct = async (req, res) => {
 
     // 3. Update other product data
     product.name = name || product.name;
-    product.description = description || product.description;
-    product.price = price ? parseFloat(price) : product.price;
-    product.discount = discount ? parseFloat(discount) : product.discount;
-    product.status = status || product.status;
-    product.isStock = isStock || product.isStock;
+    product.description = description;
+    product.category = category || product.category;
+    product.price = parseInt(price) || "";
+    product.discount = discount ? parseInt(discount) : product.discount;
+    product.status = status ;
+    product.isStock = isStock !== undefined ? isStock : product.isStock;
+    product.stock = stock ? parseInt(stock) : product.stock;
     if (variants) {
       product.variants =
         typeof variants === "string" ? JSON.parse(variants) : variants;
+    }
+    if (colors) {
+      product.colors =
+        typeof colors === "string" ? JSON.parse(colors) : colors;
     }
 
     // Save the updated product

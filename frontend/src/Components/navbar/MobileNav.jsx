@@ -1,10 +1,14 @@
 import { NavLink } from 'react-router-dom';
 import { CrossIcon } from '../../constants/icons';
-
+import { FacebookIcon, WhatsAppIcon, InstagramIcon, TiktokIcon } from '../../constants/icons';
 const MobileNav = ({ activeStyle, toggleMenu }) => {
   const categories = [
     { name: 'Home', path: '/' },
     { name: 'Products', path: '/products' },
+    { name: 'Categories', path: '/categories' },
+    { name: 'Contact', path: '/contact' },
+    { name: 'About Us', path: '/about' },
+    { name: 'Privacy Policy', path: '/privacy-policy' }
   ];
 
   return (
@@ -32,8 +36,26 @@ const MobileNav = ({ activeStyle, toggleMenu }) => {
                 </NavLink>
               </li>
             ))}
-            <li className='px-4 py-2' onClick={toggleMenu}>
-              <a href="tel:01560044236" className="block text-lg">Contact</a>
+
+            <li className='px-4 py-2 flexjustify-center gap-2' onClick={toggleMenu}>
+              <h2 className='text-lg font-semibold mb-2'>Follow Us</h2>
+              <div className='flex gap-2'>
+               <a href="https://www.facebook.com/comfortyzone" target="_blank" rel="noopener noreferrer">
+                <FacebookIcon url="facebook.com" target="_blank" className='w-10 flex items-center justify-center rounded-full' fill='#1877F2'/>                 
+               </a>
+               <a href="https://wa.me/8801560044236" target="_blank" rel="noopener noreferrer">
+                <WhatsAppIcon url="whatsapp.com" target="_blank" className='w-10 flex items-center justify-center rounded-full' fill='#25D366'/>                 
+               </a>
+
+               <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer">
+                <InstagramIcon url="instagram.com" target="_blank" className='w-10 flex items-center justify-center rounded-full' fill='#E4405F'/>                 
+               </a>
+
+               <a href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer">
+                <TiktokIcon url="tiktok.com" target="_blank" className='w-10 flex items-center justify-center rounded-full' fill='#000000'/>                 
+               </a>
+
+              </div>
             </li>
           </ul>
         </div>

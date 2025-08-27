@@ -41,6 +41,11 @@ const upload = multer({
     }
 });
 
+// Middleware for single category image
+export const uploadCategoryImage = upload.fields([
+    { name: 'categoryImage', maxCount: 1 }
+]);
+
 // Middleware for single primary image and multiple additional images
 export const uploadProductImages = upload.fields([
     { name: 'primaryImage', maxCount: 1 },

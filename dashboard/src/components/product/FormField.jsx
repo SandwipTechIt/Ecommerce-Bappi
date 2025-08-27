@@ -29,6 +29,7 @@ const FormField = ({
         min={min}
         max={max}
         step={step}
+        // autoComplete="off"
         className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-[#00BCD4] dark:text-white ${
           error ? 'border-red-500' : 'border-[#00BCD4]'
         }`}

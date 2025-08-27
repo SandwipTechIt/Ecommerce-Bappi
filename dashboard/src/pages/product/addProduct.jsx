@@ -5,8 +5,11 @@ import TextAreaField from '../../components/product/TextAreaField';
 import SelectField from '../../components/product/SelectField';
 import ImageUpload from '../../components/product/ImageUpload';
 import VariantForm from '../../components/product/VariantForm';
+import ColorPicker from '../../components/product/ColorPicker';
 import ErrorMessage from '../../components/product/ErrorMessage';
-import { postApi } from '../../api';
+import { getApi, postApi } from '../../api';
+import { useQuery } from '@tanstack/react-query';
+import { LoadingSpinner } from '../../components/Ui/Loader';
 
 const CreateProduct = () => {
     const navigate = useNavigate();
@@ -15,9 +18,11 @@ const CreateProduct = () => {
         name: '',
         description: '',
         price: '',
-        discount: '', // Already present but not displayed in form
-        isStock: true, // New field for stock status
+        discount: '',
+        isStock: true,
+        category: '',
         variants: [{ size: '', stock: true }],
+        colors: [],
         primaryImage: [],
         images: [],
         status: ''
@@ -26,12 +31,18 @@ const CreateProduct = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitError, setSubmitError] = useState('');
 
+    const { data: categories, isLoading, Error: categoryError } = useQuery({
+        queryKey: ['categories'],
+        queryFn: async () => await getApi('/getAllCategories'),
+        
+    })
+
     // Handle input changes
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
         // Handle checkbox inputs
         const val = type === 'checkbox' ? checked : value;
-        
+
         setFormData({
             ...formData,
             [name]: val
@@ -45,7 +56,7 @@ const CreateProduct = () => {
         }
     };
 
-        // Handle image changes
+    // Handle image changes
     const handlePrimaryImageChange = (images) => {
         setFormData({
             ...formData,
@@ -93,6 +104,14 @@ const CreateProduct = () => {
         });
     };
 
+    // Handle color changes
+    const handleColorsChange = (colors) => {
+        setFormData({
+            ...formData,
+            colors
+        });
+    };
+
     const handleAddVariant = () => {
         setFormData({
             ...formData,
@@ -109,17 +128,29 @@ const CreateProduct = () => {
         });
     };
 
+    const handleCategoryChange = (e) => {
+        const { value } = e.target;
+        setFormData({
+            ...formData,
+            category: value
+        });
+        // Clear error when user selects a category
+        if (errors.category) {
+            setErrors({
+                ...errors,
+                category: ''
+            });
+        }
+    };
+
     // Validate form - updated to include discount validation
     const validateForm = () => {
         const newErrors = {};
         if (!formData.name.trim()) {
             newErrors.name = 'Product name is required';
         }
-        if (!formData.price || formData.price <= 0) {
-            newErrors.price = 'Price must be greater than 0';
-        }
-        if (formData.discount < 0) {
-            newErrors.discount = 'Discount cannot be negative';
+        if (!formData.discount || formData.discount <= 0) {
+            newErrors.discount = 'Discount price cannot be negative';
         }
         if (formData.primaryImage.length === 0) {
             newErrors.primaryImage = 'Primary image is required';
@@ -135,27 +166,35 @@ const CreateProduct = () => {
         if (variantErrors.some(error => Object.keys(error).length > 0)) {
             newErrors.variants = variantErrors;
         }
+        if (!formData.colors.length) {
+            newErrors.colors = 'Colors is required';
+        }
+        if (!formData.category.trim()) {
+            newErrors.category = 'Category is required';
+        }
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
 
-    // Handle form submission - updated to include isStock
     const handleSubmit = async (e) => {
         e.preventDefault();
         setSubmitError('');
         if (!validateForm()) {
             return;
         }
+        console.log(formData);
+
         setIsSubmitting(true);
         const data = new FormData();
         data.append('name', formData.name);
         data.append('description', formData.description);
-        data.append('categories', formData.categories);
+        data.append('category', formData.category);
         data.append('price', formData.price);
         data.append('discount', formData.discount);
-        data.append('isStock', formData.isStock); // Added isStock field
+        data.append('isStock', formData.isStock);
         data.append('status', formData.status);
         data.append('variants', JSON.stringify(formData.variants));
+        data.append('colors', JSON.stringify(formData.colors));
         if (formData.primaryImage.length > 0) {
             data.append('primaryImage', formData.primaryImage[0]);
         }
@@ -169,9 +208,11 @@ const CreateProduct = () => {
                     name: '',
                     description: '',
                     price: '',
-                    discount: '0',
-                    isStock: true, // Reset isStock to default
+                    discount: '',
+                    isStock: true,
+                    category: '',
                     variants: [{ size: '', stock: true }],
+                    colors: [],
                     primaryImage: [],
                     images: [],
                     status: ''
@@ -188,15 +229,16 @@ const CreateProduct = () => {
         }
     };
 
-    // Handle form reset - updated to include isStock
     const handleReset = () => {
         setFormData({
             name: '',
             description: '',
             price: '',
-            discount: '0',
-            isStock: true, // Reset isStock to default
+            discount: '',
+            isStock: true,
+            category: '',
             variants: [{ size: '', stock: true }],
+            colors: [],
             primaryImage: [],
             images: [],
             status: ''
@@ -205,6 +247,17 @@ const CreateProduct = () => {
         setSubmitError('');
     };
 
+
+    if (isLoading) {
+        return <LoadingSpinner />
+    }
+
+    if (categoryError) {
+        return <ErrorMessage msg={categoryError?.message} retry={refetch} />
+    }
+
+
+    console.log(formData);
     return (
         <div className="min-h-screen py-8">
             <div className="mx-auto px-4 sm:px-6 lg:px-8">
@@ -214,8 +267,8 @@ const CreateProduct = () => {
                     </div>
                     <form onSubmit={handleSubmit} className="px-6 py-5">
                         {submitError && <ErrorMessage message={submitError} />}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="md:col-span-2">
+                        <div className="grid grid-cols-1 md:grid-cols-2 md:gap-6">
+                            <div className="col-span-2 md:col-span-1">
                                 <FormField
                                     label="Product Name"
                                     name="name"
@@ -225,8 +278,6 @@ const CreateProduct = () => {
                                     required={true}
                                     error={errors.name}
                                 />
-                            </div>
-                            <div className="md:col-span-2">
                                 <TextAreaField
                                     label="Description"
                                     name="description"
@@ -236,35 +287,39 @@ const CreateProduct = () => {
                                     rows={4}
                                 />
                             </div>
-                            <FormField
-                                label="Price"
-                                type="text"
-                                name="price"
-                                value={formData.price}
-                                onChange={handleChange}
-                                placeholder="Enter product price"
-                                required={true}
-                                error={errors.price}
-                            />
-                            <FormField
-                                label="Discount price"
-                                type="text"
-                                name="discount"
-                                value={formData.discount}
-                                onChange={handleChange}
-                                placeholder="Enter discount price"
-                                error={errors.discount}
-                            />
-                            <FormField
-                                label="Status"
-                                type="text"
-                                name="status"
-                                value={formData.status}
-                                onChange={handleChange}
-                                placeholder="Enter product status"
-                                error={errors.status}
-                            />
-                            {/* New isStock field */}
+                            <div className="col-span-2 md:col-span-1">
+                                <FormField
+                                    label="Regular Price"
+                                    type="text"
+                                    name="price"
+                                    value={formData.price}
+                                    onChange={handleChange}
+                                    placeholder="Enter product price"
+                                    error={errors.price}
+                                />
+                                <FormField
+                                    label="Discount Price"
+                                    type="text"
+                                    name="discount"
+                                    value={formData.discount}
+                                    onChange={handleChange}
+                                    placeholder="Enter discount price"
+                                    required={true}
+                                    error={errors.discount}
+                                />
+                                <FormField
+                                    label="Status"
+                                    type="text"
+                                    name="status"
+                                    value={formData.status}
+                                    onChange={handleChange}
+                                    placeholder="Enter product status"
+                                    error={errors.status}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-6 rounded-lg">
                             <div className="flex items-center">
                                 <input
                                     type="checkbox"
@@ -272,28 +327,55 @@ const CreateProduct = () => {
                                     name="isStock"
                                     checked={formData.isStock}
                                     onChange={handleChange}
-                                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                    className="h-6 w-6 text-blue-600 focus:ring-blue-500 rounded"
                                 />
-                                <label htmlFor="isStock" className="ml-2 block text-sm text-gray-900 dark:text-white">
+                                <label htmlFor="isStock" className="ml-2 block text-lg text-gray-900 dark:text-white ">
                                     In Stock
                                 </label>
                             </div>
+                            <SelectField
+                                label="Category"
+                                name="category"
+                                value={formData.category}
+                                onChange={handleCategoryChange}
+                                options={categories?.data?.map(category => ({
+                                    value: category.name,
+                                    label: category.name
+                                })) || []}
+                                required={true}
+                                error={errors.category}
+                            />
+                            {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-2 col-span-1 md:col-span-2 md:gap-6">
+                            </div> */}
                         </div>
-                        <VariantForm
-                            variants={formData.variants}
-                            onChange={handleVariantsChange}
-                            onAdd={handleAddVariant}
-                            onRemove={handleRemoveVariant}
-                        />
-                        <ImageUpload
-                            label="Primary Image"
-                            name="primaryImage"
-                            images={formData.primaryImage}
-                            onChange={handlePrimaryImageChange}
-                            onRemove={handleRemovePrimaryImage}
-                            required={true}
-                            error={errors.primaryImage}
-                        />
+
+                        <div>
+                            <VariantForm
+                                variants={formData.variants}
+                                onChange={handleVariantsChange}
+                                onAdd={handleAddVariant}
+                                onRemove={handleRemoveVariant}
+                                error={errors.variants}
+                            />
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 col-span-1 md:col-span-2 md:gap-6">
+                            <ColorPicker
+                                selectedColors={formData.colors}
+                                onChange={handleColorsChange}
+                                error={errors.colors}
+                            />
+                            <ImageUpload
+                                label="Primary Image"
+                                name="primaryImage"
+                                images={formData.primaryImage}
+                                onChange={handlePrimaryImageChange}
+                                onRemove={handleRemovePrimaryImage}
+                                required={true}
+                                error={errors.primaryImage}
+                            />
+                        </div>
+
                         <ImageUpload
                             label="Additional Images"
                             name="images"

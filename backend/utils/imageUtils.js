@@ -8,7 +8,6 @@ import path from 'path';
  */
 export const deleteImage = async (filename) => {
     if (!filename) return false;
-    
     try {
         const imagePath = path.join('./images', filename);
         
