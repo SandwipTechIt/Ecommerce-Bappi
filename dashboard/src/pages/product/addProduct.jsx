@@ -9,7 +9,7 @@ import ColorPicker from '../../components/product/ColorPicker';
 import ErrorMessage from '../../components/product/ErrorMessage';
 import { getApi, postApi } from '../../api';
 import { useQuery } from '@tanstack/react-query';
-import { LoadingSpinner } from '../../components/Ui/Loader';
+import Loader from '../../components/shared/Loader';
 
 const CreateProduct = () => {
     const navigate = useNavigate();
@@ -249,7 +249,7 @@ const CreateProduct = () => {
 
 
     if (isLoading) {
-        return <LoadingSpinner />
+        return <Loader />
     }
 
     if (categoryError) {
