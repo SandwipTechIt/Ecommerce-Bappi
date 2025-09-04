@@ -3,6 +3,8 @@ import ProductSection from '../Components/home/productSection';
 export default () => {
 
     return (
-        <ProductSection />
+        <div className="max-w-7xl mx-auto">
+            <ProductSection />
+        </div>
     )
 }

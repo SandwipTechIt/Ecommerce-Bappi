@@ -45,6 +45,10 @@ const upload = multer({
 export const uploadCategoryImage = upload.fields([
     { name: 'categoryImage', maxCount: 1 }
 ]);
+// Middleware for single category image
+export const uploadSloganImage = upload.fields([
+    { name: 'sloganImage', maxCount: 1 }
+]);
 
 // Middleware for single primary image and multiple additional images
 export const uploadProductImages = upload.fields([

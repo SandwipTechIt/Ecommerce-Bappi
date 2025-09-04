@@ -35,6 +35,8 @@ import OrdersByStatus from "./pages/order/ordersByStatus";
 import ShowAllMessage from "./pages/message/showAllMessage";
 import EditMessage from "./pages/message/editMessage";
 
+import ShowSlogan from "./pages/slogan/showSlogan";
+
 export default function App() {
   const { state } = setContext();
   return (
@@ -67,6 +69,7 @@ export default function App() {
                 <Route path="/courier" element={<Courier />} />
                 <Route path="/messages" element={<ShowAllMessage />} />
                 <Route path="/replyMessage/:id" element={<EditMessage />} />
+                <Route path="/showSlogan" element={<ShowSlogan />} />
               </Route>
 
               {/* Auth Layout */}

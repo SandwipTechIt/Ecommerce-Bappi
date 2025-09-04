@@ -15,13 +15,13 @@ const ProductImages = ({ product, selectedImage, setSelectedImage }) => {
   ];
 
   return (
-    <div className="md:w-1/2 p-2 md:p-4 lg:p-6">
+    <div className="md:w-1/2 p-2 md:p-4 lg:p-6 ">
       {/* Main image */}
-      <div className="relative h-[400px] rounded-lg overflow-hidden aspect-w-1 aspect-h-1 bg-white">
+      <div className="relative md:w-[500px] md:h-[500px] w-full h-[400px] rounded-lg overflow-hidden aspect-w-1 aspect-h-1">
         <img
           src={selectedImage || product.primaryImage || product.images?.[0] || '/placeholder.png'}
           alt={product.name || 'Product'}
-          className="w-full h-full  object-cover"
+          className="w-full h-full object-cover md:object-contain"
           loading="eager"
           decoding="async"
           draggable={false}
@@ -138,6 +138,33 @@ const SizeSelector = ({ variants, selectedSize, handleSizeSelect }) => {
   );
 };
 
+// ColorSelector Component
+const ColorSelector = ({ colors, selectedColor, handleColorSelect }) => {
+  if (!colors || colors.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="mt-6">
+      <h3 className="text-lg font-medium text-gray-900">Available Colors</h3>
+      <div className="mt-2 flex flex-wrap gap-3">
+        {colors.map((color) => (
+          <button
+            key={color}
+            type="button"
+            onClick={() => handleColorSelect(color)}
+            className={`w-8 h-8 rounded-full border-2 ${
+              selectedColor === color ? 'ring-2 ring-offset-1 ring-blue-500' : ''
+            } ${color.toLowerCase() === '#ffffff' || color.toLowerCase() === 'white' ? 'border-gray-300' : 'border-transparent'}`}
+            style={{ backgroundColor: color }}
+            aria-label={`Select color ${color}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
 // QuantitySelector Component
 const QuantitySelector = ({ quantity, incrementQuantity, decrementQuantity, handleQuantityChange }) => {
   return (
@@ -167,14 +194,14 @@ const QuantitySelector = ({ quantity, incrementQuantity, decrementQuantity, hand
 };
 
 // ActionButtons Component
-const ActionButtons = ({ product, quantity, selectedSize }) => {
+const ActionButtons = ({ product, quantity, selectedSize, selectedColor }) => {
   return (
     <div className="mt-8 flex flex-col sm:flex-row gap-3">
       {
-        (product.isStock && selectedSize) ? (
+        (product.isStock && selectedSize && selectedColor) ? (
           <Link
             to={`/order/${product.slug}`}
-            state={{ quantity, size: selectedSize }}
+            state={{ quantity, size: selectedSize, color: selectedColor }}
             className="flex-1 flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bgPrimary"
           >
             <ShopIcon className="w-6 h-6 mr-2" fill="white" />
@@ -184,7 +211,7 @@ const ActionButtons = ({ product, quantity, selectedSize }) => {
           <button
             className="flex-1 flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-gray-500 cursor-not-allowed"
           >
-            {product.isStock ? 'Select Size' : 'Out of Stock'}
+            {product.isStock ? (selectedSize ? 'Select Color' : 'Select Size') : 'Out of Stock'}
           </button>
         )
       }
@@ -230,6 +257,7 @@ const ProductDetails = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedColor, setSelectedColor] = useState(null);
 
   useEffect(() => {
     if (!product) return;
@@ -251,6 +279,7 @@ const ProductDetails = () => {
   const incrementQuantity = () => setQuantity((prev) => Math.min(10, prev + 1));
   const decrementQuantity = () => setQuantity((prev) => Math.max(1, prev - 1));
   const handleSizeSelect = (size) => setSelectedSize(size);
+  const handleColorSelect = (color) => setSelectedColor(color);
 
   // Show spinner only if we don't even have cached data
   if (isLoading && !product) return <div className="flex items-center justify-center h-screen"><LoadingSpinner /></div>
@@ -266,8 +295,8 @@ const ProductDetails = () => {
   );
   return (
     <div className="heroBg">
-      <div className="px-2 sm:px-4 pb-20 bg-white/50">
-        <div className="rounded-lg overflow-hidden">
+      <div className="px-2 sm:px-4 pb-20 bg-white/50 ">
+        <div className="rounded-lg overflow-hidden max-w-7xl mx-auto">
           <div className="md:flex justify-between">
             {/* Product Images */}
             <ProductImages
@@ -277,13 +306,18 @@ const ProductDetails = () => {
             />
 
             {/* Product Details */}
-            <div className="md:w-1/2 p-2 md:p-4 lg:p-6">
+            <div className="md:w-1/2 p-2 md:p-4 lg:p-6 ">
               <ProductInfo product={product} />
               <ProductDescription description={product.description} />
               <SizeSelector
                 variants={product.variants}
                 selectedSize={selectedSize}
                 handleSizeSelect={handleSizeSelect}
+              />
+              <ColorSelector
+                colors={product.colors}
+                selectedColor={selectedColor}
+                handleColorSelect={handleColorSelect}
               />
               <QuantitySelector
                 quantity={quantity}
@@ -295,6 +329,7 @@ const ProductDetails = () => {
                 product={product}
                 quantity={quantity}
                 selectedSize={selectedSize}
+                selectedColor={selectedColor}
               />
             </div>
           </div>

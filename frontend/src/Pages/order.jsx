@@ -76,6 +76,7 @@ const Order = () => {
 
     /* ---------- local state ---------- */
     const [size, setSize] = useState(state?.size || '');
+    const [color, setColor] = useState(state?.color || '');
     const [selectedCourier, setSelectedCourier] = useState(null);
     const [appliedCoupon, setAppliedCoupon] = useState(null);
     const [quantity, setQuantity] = useState(state?.quantity || 1);
@@ -164,11 +165,21 @@ const Order = () => {
             });
             return;
         }
+        if (product.colors && product.colors.length > 0 && !color) {
+            setAlert({
+                isOpen: true,
+                type: 'error',
+                message: 'Please select a color',
+            });
+            return;
+        }
+
         try {
             const payload = {
                 ...formData,
                 productID: product._id,
                 size,
+                color,
                 quantity,
                 courier: selectedCourier ? {
                     id: selectedCourier._id,
@@ -222,9 +233,9 @@ const Order = () => {
     return (
         <section className='heroBg'>
             <Alert type={alert.type} message={alert.message} isOpen={alert.isOpen} onClose={() => setAlert({ isOpen: false })} />
-            <div className="container bg-white/50 ">
-                <div className="max-w-5xl mx-auto p-4 md:p-8 grid md:grid-cols-2 gap-8 ">
-                    <section className='order-2 md:order-1'>
+            <div className="bg-white/50 pb-4">
+                <div className="max-w-5xl mx-auto md:p-4 grid md:grid-cols-2 gap-8 ">
+                    <section className='order-2 px-4 md:order-1'>
                         <h2 className="text-2xl font-bold mb-4 text-center md:text-left">Shipping Info</h2>
                         <OrderForm formData={formData} onChange={setFormData} />
                         <ShippingChargeSelector data={courier?.data} onSelect={handleCourierSelect} />
@@ -263,7 +274,7 @@ const Order = () => {
                                     )
                             }
                         </div>
-                        <div className="fixed container bg-white !px-6 !pb-4 bottom-0 left-0 w-full md:hidden">
+                        <div className="fixed container bg-gray-100 !px-4 !pb-4 bottom-0 left-0 w-full md:hidden z-999999999">
                             {
                                 product.isStock
                                     ? (
@@ -296,13 +307,15 @@ const Order = () => {
                     </section>
 
                     <section className='order-1 md:order-2 grid grid-cols-1'>
-                        <div className="order-2 md:order-1 mt-6 md:mt-0">
-                            <h2 className="text-2xl font-bold mb-4 text-center md:text-left">Order Summary</h2>
+                        <div className="order-2 md:order-1 mt-2 md:mt-0">
+                            <h2 className="text-2xl font-bold md:mb-4 text-center md:text-left">Order Summary</h2>
                             <OrderSummary
                                 product={product}
                                 size={size}
+                                color={color}
                                 quantity={quantity}
                                 setSize={setSize}
+                                setColor={setColor}
                                 setQuantity={setQuantity}
                                 subtotal={subtotal}
                                 shippingCost={shippingCost}

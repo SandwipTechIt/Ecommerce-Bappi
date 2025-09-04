@@ -252,6 +252,8 @@ export const getAllProducts = async (req, res) => {
     });
   }
 };
+
+
 export const stockOutProducts = async (req, res) => {
   try {
     const products = await Product.find({ isStock: false })
@@ -527,3 +529,130 @@ export const getAllProductWithOrders = async (req, res) => {
     });
   }
 };
+
+
+
+// export const getTopSellingProducts = async (req, res) => {
+//   try {
+//     /* ------------------------------------------------------------------ */
+//     /* 1. Aggregation pipeline – count sold units per product             */
+//     /* ------------------------------------------------------------------ */
+//     const topSold = await Order.aggregate([
+//       { $match: { status: { $in: ["pending", "completed"] } } }, // cancelled orders ignored
+//       { $group: { _id: "$productID", totalSold: { $sum: "$quantity" } } },
+//       { $sort: { totalSold: -1 } },
+//       { $limit: 10 },
+//       {
+//         $lookup: {
+//           from: "products",
+//           localField: "_id",
+//           foreignField: "_id",
+//           as: "product",
+//         },
+//       },
+//       { $unwind: "$product" },
+//       { $replaceRoot: { newRoot: "$product" } },
+//     ]);
+
+//     /* ------------------------------------------------------------------ */
+//     /* 2. If we have sales → respond                                      */
+//     /* ------------------------------------------------------------------ */
+//     if (topSold.length) return res.status(200).json({ success: true, data: topSold });
+
+//     /* ------------------------------------------------------------------ */
+//     /* 3. No sales yet → random 10 products                               */
+//     /* ------------------------------------------------------------------ */
+//     const randomProducts = await Product.aggregate([{ $sample: { size: 10 } }]);
+
+//     return res.status(200).json({
+//       success: true,
+//       message: "No sales yet – returning random products",
+//       data: randomProducts,
+//     });
+//   } catch (err) {
+//     console.error("getTopSellingProducts:", err);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Server error while fetching products",
+//     });
+//   }
+// };
+
+
+
+export const getTopSellingProducts = async (req, res) => {
+  try {
+    /* 1. Aggregate sold quantities */
+    const topSold = await Order.aggregate([
+      { $match: { status: { $in: ["pending", "completed"] } } },
+      { $group: { _id: "$productID", totalSold: { $sum: "$quantity" } } },
+      { $sort: { totalSold: -1 } },
+      { $limit: 10 },
+      {
+        $lookup: {
+          from: "products",
+          localField: "_id",
+          foreignField: "_id",
+          pipeline: [
+            { $project: { images: 0, __v: 0, variants: 0, colors: 0, updatedAt: 0 } }
+          ],
+          as: "product",
+        },
+      },
+      { $unwind: "$product" },
+      { $replaceRoot: { newRoot: "$product" } },
+    ]);
+
+    /* 2. Has sales → respond */
+    if (topSold.length > 4) {
+      return res.status(200).json({ success: true, data: topSold });
+    }
+
+    /* 3. No sales → random 10 products */
+    const randomProducts = await Product.aggregate([
+      { $sample: { size: 10 } },
+      { $project: { images: 0, __v: 0, variants: 0, colors: 0, updatedAt: 0 } }
+    ]);
+
+    return res.status(200).json({
+      success: true,
+      message: "No sales yet – returning random products",
+      data: randomProducts,
+    });
+  } catch (err) {
+    console.error("getTopSellingProducts:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while fetching products",
+    });
+  }
+};
+
+
+
+export const latestProducts = async (req, res) => {
+    try {
+        const products = await Product.find()
+            .sort({ createdAt: -1 })
+            .select("-images -__v -variants -categories -updatedAt")
+            .limit(10);
+
+        // Add full image URLs to response
+        const baseUrl = `${req.protocol}://${req.get("host")}`;
+        const productsWithImageUrls = products.map((product) => ({
+            ...product.toObject(),
+            primaryImage: getImageUrl(product.primaryImage, baseUrl),
+            // images: product.images.map(img => getImageUrl(img, baseUrl))
+        }));
+
+        res.status(200).json(productsWithImageUrls);
+    } catch (error) {
+        console.error("Error fetching products:", error);
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch products",
+            error: error.message,
+        });
+    }
+};
+    

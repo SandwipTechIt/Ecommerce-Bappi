@@ -109,7 +109,7 @@ const About = () => {
           </p>
           <Link
             to="/products"
-            className="mt-6 inline-flex items-center rounded-full bg-orange-500 px-6 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2"
+            className="mt-6 inline-flex items-center rounded-full bg-orange-500 px-20 py-5 text-sm font-semibold text-white shadow-md transition hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2"
           >
             Shop Now
           </Link>

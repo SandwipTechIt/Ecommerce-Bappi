@@ -11,7 +11,9 @@ import {
     updateProduct,
     getAllProductsWithDetails,
     getAllProductWithOrders,
-    stockOutProducts
+    stockOutProducts,
+    getTopSellingProducts,
+    latestProducts
 } from "../controllers/product.controller.js";
 
 router.get("/products", getAllProducts);
@@ -24,5 +26,8 @@ router.get("/getAllProductsByCategory/:id", getAllProductsByCategory);
 router.post("/createProduct",uploadProductImages, handleUploadError, createProduct);
 router.put("/product/:id", uploadProductImages, handleUploadError, updateProduct);
 router.delete("/deleteProduct/:id", deleteProduct);
+
+router.get("/getTopSellingProducts", getTopSellingProducts);
+router.get("/latestProducts", latestProducts);
 
 export default router;

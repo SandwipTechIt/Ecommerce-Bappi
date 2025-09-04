@@ -75,13 +75,39 @@ const SvgIcon = ({ className = '', ...props }) => (
   </svg>
 );
 
-const OrderSummary = ({ product, size, setSize, quantity, setQuantity, subtotal, shippingCost, discountAmount, totalCost }) => {
+const ColorSelector = ({ colors, selectedColor, handleColorSelect }) => {
+  if (!colors || colors.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="mt-4">
+      <h3 className="text-lg font-medium text-gray-900">Color</h3>
+      <div className="mt-2 flex flex-wrap gap-3">
+        {colors.map((color) => (
+          <button
+            key={color}
+            type="button"
+            onClick={() => handleColorSelect(color)}
+            className={`w-8 h-8 rounded-full border-2 ${
+              selectedColor === color ? 'ring-2 ring-offset-1 ring-blue-500' : ''
+            } ${color.toLowerCase() === '#ffffff' || color.toLowerCase() === 'white' ? 'border-gray-300' : 'border-transparent'}`}
+            style={{ backgroundColor: color }}
+            aria-label={`Select color ${color}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const OrderSummary = ({ product, size, setSize, color, setColor, quantity, setQuantity, subtotal, shippingCost, discountAmount, totalCost }) => {
   return (
     <div className="border border-gray-200 rounded p-4 space-y-4">
       <img
         src={product.primaryImage}
         alt={product.name}
-        className="w-full h-48 object-cover rounded"
+        className="w-full lg:w-[180px] lg:h-[180px] object-cover rounded"
       />
 
       <h3 className="text-lg font-semibold">{product.name}</h3>
@@ -89,6 +115,11 @@ const OrderSummary = ({ product, size, setSize, quantity, setQuantity, subtotal,
         variants={product.variants}
         selectedSize={size}
         handleSizeSelect={setSize}
+      />
+      <ColorSelector
+        colors={product.colors}
+        selectedColor={color}
+        handleColorSelect={setColor}
       />
 
       <div className="flex justify-between items-center pt-2">

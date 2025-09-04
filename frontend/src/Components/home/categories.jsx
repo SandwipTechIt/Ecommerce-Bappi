@@ -42,14 +42,16 @@ const Categories = () => {
     return <div>Error: {error.message}</div>
   }
   
+
+
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="text-center mb-10">
+      <div className="text-center mt-5 mb-10">
         <h2 className="text-3xl md:text-4xl font-bold text-gray-800 my-2 md:my-4">
           Shop by Category
         </h2>
       </div>
-      <div className="flex flex-wrap gap-2 md:gap-4">
+      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-2 md:gap-4">
         {categories?.data?.map((category) => (
           <div
             key={category._id}
@@ -59,11 +61,11 @@ const Categories = () => {
             role="button"
             tabIndex="0"
           >
-            <div className="w-full h-full rounded-lg overflow-hidden shadow-lg">
+            <div className="w-full h-full flex items-center justify-center rounded-lg overflow-hidden shadow-lg">
               <img
                 src={category.categoryImage}
                 alt={category.name}
-                className="w-full h-full object-contain"
+                className="w-[150px] h-[150px] object-contain"
                 onError={handleImageError}
               />
             </div>

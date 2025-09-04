@@ -6,7 +6,7 @@ import Features from '../Components/home/features';
 // const Hero = lazy(() => import('../Components/home/hero'));
 const ProductSection = lazy(() => import('../Components/home/productSection'));
 const Categories = lazy(() => import('../Components/home/categories'));
-
+const Slogan = lazy(() => import('../Components/home/slogan'));
 
 import { getApi } from '../api';
 
@@ -37,14 +37,24 @@ export default () => {
         refetchOnWindowFocus: true,
     });
 
+    const { data: slogans } = useQuery({
+        queryKey: ['slogans'],
+        queryFn: () => getApi('getSlogan'),
+        refetchOnMount: 'always',
+        refetchOnWindowFocus: true,
+    });
 
+    
     return (
         <div>
             <Hero />
             <Suspense fallback={<LoadingSpinner />}>
-                <div className='container mx-auto'>
+                <div className='max-w-7xl mx-auto'>
                     <Categories />
                     <ProductSection />
+                    {
+                        slogans && <Slogan data={slogans} />
+                    }
                 </div>
             </Suspense>
             <Features />

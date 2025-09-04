@@ -12,7 +12,7 @@ export default ({ product }) => {
     };
 
     return (
-        <div id="productCard" className="w-full">
+        <div id="productCard" className="w-full lg:w-[240px]">
             <Link to={`/product/${product.slug}`} className="block h-full">
                 <div className="relative overflow-hidden rounded-lg shadow-xl hover:shadow-2xl transition-all duration-300 bg-white h-full flex flex-col">
                     {product.status && (
@@ -26,7 +26,7 @@ export default ({ product }) => {
                         <img
                             src={product.primaryImage}
                             alt={product.name}
-                            className="w-full h-36 md:h-[240px] object-cover rounded-md"
+                            className="w-full h-full lg:w-[240px] md:h-[240px]  object-cover rounded-md"
                         />
                         {!product.isStock && (
                             <img
