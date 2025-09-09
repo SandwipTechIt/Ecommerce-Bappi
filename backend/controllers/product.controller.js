@@ -578,6 +578,53 @@ export const getAllProductWithOrders = async (req, res) => {
 //   }
 // };
 
+export const getProducts = async (req, res) => {
+  try {
+
+    const products = await Product.find()
+      .select("-images -__v -variants -categories -updatedAt");
+
+    // Add full image URLs to response
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
+    const productsWithImageUrls = products.map((product) => ({
+      ...product.toObject(),
+      primaryImage: getImageUrl(product.primaryImage, baseUrl),
+      // images: product.images.map(img => getImageUrl(img, baseUrl))
+    }));
+
+    res.status(200).json(productsWithImageUrls);
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch products",
+      error: error.message,
+    });
+  }
+};
+export const getProductsWithDetails = async (req, res) => {
+  try {
+    const products = await Product.find()
+      .select("-__v -updatedAt");
+
+    // Add full image URLs to response
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
+    const productsWithImageUrls = products.map((product) => ({
+      ...product.toObject(),
+      primaryImage: getImageUrl(product.primaryImage, baseUrl),
+      images: product.images.map((img) => getImageUrl(img, baseUrl)),
+    }));
+
+    res.status(200).json(productsWithImageUrls);
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch products",
+      error: error.message,
+    });
+  }
+};
 
 
 export const getTopSellingProducts = async (req, res) => {
@@ -603,21 +650,35 @@ export const getTopSellingProducts = async (req, res) => {
       { $replaceRoot: { newRoot: "$product" } },
     ]);
 
-    /* 2. Has sales → respond */
+   
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
+
+
+    // /* 2. Has sales → respond */
     if (topSold.length > 4) {
-      return res.status(200).json({ success: true, data: topSold });
+      const topSoldWithImageUrls = topSold.map((product) => ({
+        ...product,
+        primaryImage: getImageUrl(product.primaryImage, baseUrl),
+        // images: product.images.map(img => getImageUrl(img, baseUrl))
+      }));
+      return res.status(200).json({ success: true, data: topSoldWithImageUrls });
     }
 
-    /* 3. No sales → random 10 products */
+    // /* 3. No sales → random 10 products */
     const randomProducts = await Product.aggregate([
       { $sample: { size: 10 } },
       { $project: { images: 0, __v: 0, variants: 0, colors: 0, updatedAt: 0 } }
     ]);
 
+    // const baseUrl = `${req.protocol}://${req.get("host")}`;
+    const randomProductsWithImageUrls = randomProducts.map((product) => ({
+      ...product,
+      primaryImage: getImageUrl(product.primaryImage, baseUrl),
+      // images: product.images.map(img => getImageUrl(img, baseUrl))
+    }));
     return res.status(200).json({
       success: true,
-      message: "No sales yet – returning random products",
-      data: randomProducts,
+      data: randomProductsWithImageUrls,
     });
   } catch (err) {
     console.error("getTopSellingProducts:", err);
@@ -627,9 +688,6 @@ export const getTopSellingProducts = async (req, res) => {
     });
   }
 };
-
-
-
 export const latestProducts = async (req, res) => {
     try {
         const products = await Product.find()
