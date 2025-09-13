@@ -49,6 +49,10 @@ export const uploadCategoryImage = upload.fields([
 export const uploadSloganImage = upload.fields([
     { name: 'sloganImage', maxCount: 1 }
 ]);
+// Middleware for single category image
+export const uploadReviewImage = upload.fields([
+    { name: 'reviewImage', maxCount: 10 }
+]);
 
 // Middleware for single primary image and multiple additional images
 export const uploadProductImages = upload.fields([

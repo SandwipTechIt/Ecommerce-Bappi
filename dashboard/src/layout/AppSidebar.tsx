@@ -60,6 +60,14 @@ const navItems: NavItem[] = [
     ],
   },
   {
+    name: "Reviews",
+    icon: "fas fa-star",
+    subItems: [
+      { name: "Add Review", path: "/addReview" },
+      { name: "All Review", path: "/allReview" },
+    ],
+  },
+  {
     name: "Courier",
     icon: "fas fa-shipping-fast",
     path: "/courier",
@@ -78,7 +86,7 @@ const navItems: NavItem[] = [
     name: "Messages",
     icon: "fas fa-message",
     path: "/messages",
-  },
+  }
 ];
 
 const othersItems: NavItem[] = [

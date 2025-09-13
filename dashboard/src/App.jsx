@@ -35,6 +35,9 @@ import OrdersByStatus from "./pages/order/ordersByStatus";
 import ShowAllMessage from "./pages/message/showAllMessage";
 import EditMessage from "./pages/message/editMessage";
 
+import AddReview from "./pages/review/addReview";
+import ShowAllReview from "./pages/review/showAllReview";
+
 import ShowSlogan from "./pages/slogan/showSlogan";
 
 export default function App() {
@@ -70,6 +73,8 @@ export default function App() {
                 <Route path="/messages" element={<ShowAllMessage />} />
                 <Route path="/replyMessage/:id" element={<EditMessage />} />
                 <Route path="/showSlogan" element={<ShowSlogan />} />
+                <Route path="/addReview" element={<AddReview />} />
+                <Route path="/allReview" element={<ShowAllReview />} />
               </Route>
 
               {/* Auth Layout */}

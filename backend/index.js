@@ -30,6 +30,7 @@ import couponRoutes from "./routes/coupon.routes.js";
 import courierRoutes from "./routes/courier.routes.js";
 import messageRoutes from "./routes/message.routes.js";
 import sloganRoutes from "./routes/slogan.routes.js";
+import reviewRoutes from "./routes/review.route.js";
 
 app.use(productRoutes);
 app.use(adminRoutes);
@@ -42,6 +43,7 @@ app.use(couponRoutes);
 app.use(courierRoutes);
 app.use(messageRoutes);
 app.use(sloganRoutes);
+app.use(reviewRoutes);
 
 app.use((err, req, res, next) => {
   const errorStatus = err.status || 500;

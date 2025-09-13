@@ -3,7 +3,8 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { LoadingSpinner } from '../Components/Ui/Loader';
 import Hero from '../Components/home/hero';
 import Features from '../Components/home/features';
-import Faq from '../Components/home/faq';
+import Reviews from '../Components/home/reviews';
+import OfferBox from '../Components/home/OfferBox';
 // const Hero = lazy(() => import('../Components/home/hero'));
 const ProductSection = lazy(() => import('../Components/home/productSection'));
 const TopSellingProducts = lazy(() => import('../Components/home/topSellingProducts'));
@@ -58,11 +59,13 @@ export default () => {
                         slogans && <Slogan data={slogans} />
                     }
                     <TopSellingProducts />
-                    <Faq />
+                    <Reviews />
                     <LatestProducts />
                 </div>
             </Suspense>
             <Features />
+            {/* OfferBox popup - shows first slogan as popup */}
+            {slogans && <OfferBox sloganData={slogans} />}
         </div>
     )
 }
