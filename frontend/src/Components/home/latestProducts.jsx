@@ -14,9 +14,6 @@ export default () => {
     if (isLoading) return <LoadingSpinner />;
     if (error) return <div>Error: {error.message}</div>;
 
-console.log(products);
-
-
     return (
         <section className="w-full bg-white ">
             <div className="w-full px-2 py-6">

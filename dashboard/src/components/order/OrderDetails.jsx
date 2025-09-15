@@ -55,12 +55,12 @@ function InvoiceDesign55x85({
             </div>
           </div>
 
-          <div className="flex flex-col">
+          <div className="flex flex-col -m-2">
             <div className="text-right">
-              <h1 className="text-[28px] font-semibold leading-none">Comforty<span className="text-[#F2652A]">Zone</span></h1>
+              <img className="w-48" src="/invoiceLogo.jpg" alt="" />
             </div>
             {/* Bill To */}
-            <div className="mt-6">
+            <div className="mt-3">
               <div className="uppercase text-xs tracking-widest text-gray-500 font-semibold">
                 INVOICE TO
               </div>
@@ -132,20 +132,22 @@ function InvoiceDesign55x85({
               </div>
             </div>
 
-            <div
-              className="grid grid-cols-12 text-sm text-gray-800 border-t border-gray-200 first:border-t-0"
-            >
-              <div className="col-span-6 px-4 py-3">
-                Coupon Discount
+            { couponDiscount > 0 &&
+              <div
+                className="grid grid-cols-12 text-sm text-gray-800 border-t border-gray-200 first:border-t-0"
+              >
+                <div className="col-span-6 px-4 py-3">
+                  Coupon Discount
+                </div>
+                <div className="col-span-2 px-4 py-3 text-right">
+                </div>
+                <div className="col-span-2 px-4 py-3 text-right">
+                </div>
+                <div className="col-span-2 px-4 py-3 text-right">
+                  {couponDiscount}
+                </div>
               </div>
-              <div className="col-span-2 px-4 py-3 text-right">
-              </div>
-              <div className="col-span-2 px-4 py-3 text-right">
-              </div>
-              <div className="col-span-2 px-4 py-3 text-right">
-                {couponDiscount}
-              </div>
-            </div>
+            }
           </div>
 
           {/* Subtotal */}
@@ -163,9 +165,9 @@ function InvoiceDesign55x85({
         {/* Footer (light grey bar with three columns) */}
         <footer className="bg-gray-100 border-t border-gray-200">
           <div className="px-2 py-4">
-            <div className="grid grid-cols-3 gap-4 text-[12px] text-gray-700">
+            <div className="grid grid-cols-[2fr_1fr_1fr] text-[12px] text-gray-700">
               <div className="space-y-1">
-                <div className="font-xs">Bankers Tower, 24 BCS Tower goli, Road no- 01, Laboni point, Bosila, Dhaka</div>
+                <div className="font-xs">Dhaka Office : Bankers Tower, 24 BCS Tower goli, Road no- 01, Laboni point, Bosila, Dhaka</div>
                 <div className="font-xs">Chittagong Office : House 12, Gate 05, Block K, Halishahar H/E, Chattogram.</div>
               </div>
 
@@ -193,7 +195,7 @@ function InvoiceDesign55x85({
                   >
                     <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.03-.24c1.12.37 2.33.57 3.56.57a1 1 0 011 1V21a1 1 0 01-1 1C10.3 22 2 13.7 2 3a1 1 0 011-1h3.49a1 1 0 011 1c0 1.23.2 2.44.57 3.56a1 1 0 01-.24 1.03l-2.2 2.2z" />
                   </svg>
-                  <span className="font-medium">09696744555</span>
+                  <span className="font-medium">01820340331</span>
                 </div>
               </div>
 

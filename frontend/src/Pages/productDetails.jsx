@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { LoadingSpinner } from '../Components/Ui/Loader';
 import { getApi } from '../api';
 import { PlusIcon, MinusIcon, ShopIcon } from '../constants/icons';
+import { setProductMetaTags, resetMetaTags } from '../utils/metaTags';
 
 // ProductImages Component
 const ProductImages = ({ product, selectedImage, setSelectedImage }) => {
@@ -153,9 +154,8 @@ const ColorSelector = ({ colors, selectedColor, handleColorSelect }) => {
             key={color}
             type="button"
             onClick={() => handleColorSelect(color)}
-            className={`w-8 h-8 rounded-full border-2 ${
-              selectedColor === color ? 'ring-2 ring-offset-1 ring-blue-500' : ''
-            } ${color.toLowerCase() === '#ffffff' || color.toLowerCase() === 'white' ? 'border-gray-300' : 'border-transparent'}`}
+            className={`w-8 h-8 rounded-full border-2 ${selectedColor === color ? 'ring-2 ring-offset-1 ring-blue-500' : ''
+              } ${color.toLowerCase() === '#ffffff' || color.toLowerCase() === 'white' ? 'border-gray-300' : 'border-transparent'}`}
             style={{ backgroundColor: color }}
             aria-label={`Select color ${color}`}
           />
@@ -238,6 +238,8 @@ const SvgIcon = ({ className = '', ...props }) => (
 const ProductDetails = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+
   const queryClient = useQueryClient();
 
   const { data: product, isLoading, isError, error } = useQuery({
@@ -267,7 +269,31 @@ const ProductDetails = () => {
 
     const defaultSize = null;
     setSelectedSize(defaultSize);
+
+    // Update meta tags for social media sharing
+    const currentUrl = window.location.href;
+    setProductMetaTags(product, currentUrl);
+
+    // Cleanup function to reset meta tags when component unmounts
+    return () => {
+      resetMetaTags();
+    };
   }, [product]);
+
+  useEffect(() => {
+    // URL এর query part ধরো 👉 যেমন: "?fbclid=ABCD123..."
+    const params = new URLSearchParams(location.search);
+
+    // fbclid বের করে নাও
+    const fbclid = params.get("fbclid");
+
+    if (fbclid) {
+      console.log("Found fbclid:", fbclid);
+
+      // 👉 localStorage এ রেখে দাও (checkout এ ব্যবহার করতে পারবে)
+      localStorage.setItem("fbclid", fbclid);
+    }
+  }, [location.search]);
 
   const handleQuantityChange = (e) => {
     const value = parseInt(e.target.value, 10);

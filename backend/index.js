@@ -31,6 +31,7 @@ import courierRoutes from "./routes/courier.routes.js";
 import messageRoutes from "./routes/message.routes.js";
 import sloganRoutes from "./routes/slogan.routes.js";
 import reviewRoutes from "./routes/review.route.js";
+import fbqRoutes from "./routes/fbq.routes.js";
 
 app.use(productRoutes);
 app.use(adminRoutes);
@@ -44,6 +45,7 @@ app.use(courierRoutes);
 app.use(messageRoutes);
 app.use(sloganRoutes);
 app.use(reviewRoutes);
+app.use(fbqRoutes);
 
 app.use((err, req, res, next) => {
   const errorStatus = err.status || 500;

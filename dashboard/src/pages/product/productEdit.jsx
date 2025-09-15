@@ -35,6 +35,11 @@ const ProductEdit = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitError, setSubmitError] = useState('');
     const [isLoading, setIsLoading] = useState(true);
+    const [imagesToDelete, setImagesToDelete] = useState([]);
+    const [originalImages, setOriginalImages] = useState({
+        primaryImage: [],
+        images: []
+    });
 
     const { data: categories, isLoading: categoriesLoading, error: categoryError } = useQuery({
         queryKey: ['categories'],
@@ -82,6 +87,13 @@ const ProductEdit = () => {
     };
 
     const handleRemovePrimaryImage = (index) => {
+        const imageToRemove = formData.primaryImage[index];
+        
+        // If it's an existing image (string URL), add to deletion list
+        if (typeof imageToRemove === 'string') {
+            setImagesToDelete(prev => [...prev, imageToRemove]);
+        }
+        
         const newImages = [...formData.primaryImage];
         newImages.splice(index, 1);
         setFormData({
@@ -91,6 +103,13 @@ const ProductEdit = () => {
     };
 
     const handleRemoveImage = (index) => {
+        const imageToRemove = formData.images[index];
+        
+        // If it's an existing image (string URL), add to deletion list
+        if (typeof imageToRemove === 'string') {
+            setImagesToDelete(prev => [...prev, imageToRemove]);
+        }
+        
         const newImages = [...formData.images];
         newImages.splice(index, 1);
         setFormData({
@@ -189,11 +208,22 @@ const ProductEdit = () => {
         data.append('status', formData.status);
         data.append('variants', JSON.stringify(formData.variants));
         data.append('colors', JSON.stringify(formData.colors));
-        if (formData.primaryImage.length > 0) {
+        
+        // Add images to delete
+        if (imagesToDelete.length > 0) {
+            data.append('imagesToDelete', JSON.stringify(imagesToDelete));
+        }
+        
+        // Handle primary image - only append if it's a new file (not a string URL)
+        if (formData.primaryImage.length > 0 && typeof formData.primaryImage[0] !== 'string') {
             data.append('primaryImage', formData.primaryImage[0]);
         }
+        
+        // Handle additional images - only append new files (not string URLs)
         formData.images.forEach(image => {
-            data.append('images', image);
+            if (typeof image !== 'string') {
+                data.append('images', image);
+            }
         });
 
         try {
@@ -213,6 +243,7 @@ const ProductEdit = () => {
                     status: '',
                     category: ''
                 });
+                setImagesToDelete([]);
                 navigate('/allProducts');
                 alert('Product updated successfully');
             } else {
@@ -242,6 +273,7 @@ const ProductEdit = () => {
         });
         setErrors({});
         setSubmitError('');
+        setImagesToDelete([]);
     };
 
     useEffect(() => {
@@ -264,6 +296,15 @@ const ProductEdit = () => {
                     primaryImage: product.primaryImage ? [product.primaryImage] : [],
                     images: product.images || []
                 });
+                
+                // Store original images for tracking deletions
+                setOriginalImages({
+                    primaryImage: product.primaryImage ? [product.primaryImage] : [],
+                    images: product.images || []
+                });
+                
+                // Reset deletion tracking
+                setImagesToDelete([]);
             } catch (error) {
                 console.error('Failed to fetch product:', error);
                 setSubmitError('Failed to load product data.');

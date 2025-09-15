@@ -69,11 +69,11 @@ import OrderSummary from '../Components/order/OrderSummary';
 import CouponValidator from '../Components/order/coupon';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { WhatsAppIcon } from '../constants/icons';
-
+import useFbEvent from '../hook/useFbEvent';
 const Order = () => {
     const { slug } = useParams();
     const { state } = useLocation();           // may contain { size, quantity }
-
+    const { fire } = useFbEvent();
     /* ---------- local state ---------- */
     const [size, setSize] = useState(state?.size || '');
     const [color, setColor] = useState(state?.color || '');
@@ -194,6 +194,19 @@ const Order = () => {
                 } : null
             };
             await postApi('createOrder', payload);
+            // Track purchase with user data we actually collect
+            fire('Purchase', {
+                content_name: product.name,
+                content_category: product.category,
+                content_ids: [product._id],
+                content_type: 'product',
+                value: totalCost,
+                currency: 'BDT',
+                num_items: quantity
+            }, {
+                name: formData.name,
+                phone: formData.number
+            });
             setFormData({
                 name: '',
                 number: '',
@@ -219,6 +232,7 @@ const Order = () => {
     const handleWhatsApp = () => {
         window.open(`https://wa.me/8801560044236?text=I%20want%20to%20order%20${product.name}`, '_blank');
     };
+
     /* ---------- early returns ---------- */
     if (loading || courierLoading) return <p className="text-center p-8">Loading product…</p>;
     if (error || courierError) return <p className="text-center text-red-600 p-8">{error?.message}</p>;
