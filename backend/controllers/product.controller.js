@@ -46,12 +46,6 @@ function getProductsData() {
           "stock": true,
         }
       ],
-      "colors": [
-        "#000000",
-        "#ff007b",
-        "#eb2d2d",
-        "white"
-      ],
       "primaryImage": `${i} (1).jpg`,
       "images": additionalImages,
       "status": "limited stock",
@@ -63,7 +57,7 @@ function getProductsData() {
 
 export const createProduct = async (req, res) => {
   try {
-    const { name, description, category, price, discount, variants, colors, status, isStock, stock } =
+    const { name, description, category, price, discount, variants, status, isStock, stock } =
       req.body;
 
     // Validate required fields
@@ -116,20 +110,6 @@ export const createProduct = async (req, res) => {
         return res.status(400).json({
           success: false,
           message: "Invalid variants format",
-        });
-      }
-    }
-
-    // Handle colors if provided
-    if (colors) {
-      try {
-        productData.colors =
-          typeof colors === "string" ? JSON.parse(colors) : colors;
-      } catch (error) {
-        await cleanupUploadedFiles(req.files);
-        return res.status(400).json({
-          success: false,
-          message: "Invalid colors format",
         });
       }
     }
@@ -338,7 +318,6 @@ export const updateProduct = async (req, res) => {
       price,
       discount,
       variants,
-      colors,
       status,
       imagesToDelete,
       isStock,
@@ -402,10 +381,7 @@ export const updateProduct = async (req, res) => {
       product.variants =
         typeof variants === "string" ? JSON.parse(variants) : variants;
     }
-    if (colors) {
-      product.colors =
-        typeof colors === "string" ? JSON.parse(colors) : colors;
-    }
+
 
     // Save the updated product
     const updatedProduct = await product.save();
@@ -641,7 +617,7 @@ export const getTopSellingProducts = async (req, res) => {
           localField: "_id",
           foreignField: "_id",
           pipeline: [
-            { $project: { images: 0, __v: 0, variants: 0, colors: 0, updatedAt: 0 } }
+            { $project: { images: 0, __v: 0, variants: 0, updatedAt: 0 } }
           ],
           as: "product",
         },
@@ -667,7 +643,7 @@ export const getTopSellingProducts = async (req, res) => {
     // /* 3. No sales → random 10 products */
     const randomProducts = await Product.aggregate([
       { $sample: { size: 10 } },
-      { $project: { images: 0, __v: 0, variants: 0, colors: 0, updatedAt: 0 } }
+      { $project: { images: 0, __v: 0, variants: 0, updatedAt: 0 } }
     ]);
 
     // const baseUrl = `${req.protocol}://${req.get("host")}`;

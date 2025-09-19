@@ -4,7 +4,7 @@ import DesktopNav from './DesktopNav.jsx';
 import MobileNav from './MobileNav.jsx';
 import SearchNav from './SearchNav.jsx';
 import { SearchIcon, MenuIcon, CrossIcon } from '../../constants/icons';
-
+import logo from "/logo.jpg"
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -27,7 +27,7 @@ const Navbar = () => {
             <div className='flex items-center justify-between h-full px-4 md:px-8'>
                 {/* Logo */}
                 <NavLink to='/' className='font-bold text-2xl'>
-                Com<span className='text-[#E74C3C]'>fortY</span>
+                    <img src={logo} alt="" className='h-8' />
                 </NavLink>
 
                 {/* Desktop Navigation */}

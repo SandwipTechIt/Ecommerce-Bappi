@@ -13,9 +13,9 @@ export default () => {
                     <div className="flex-1 flex flex-col sm:items-start ">
                         <Link to="/" className="inline-flex items-center gap-3">
                             <img
-                                src="/logo.jpeg"
+                                src="/logo.jpg"
                                 alt="ComfortStep Logo"
-                                className="h-8 w-auto object-contain"
+                                className="h-8 w-auto object-contain rounded-sm"
                             />
                         </Link>
 

@@ -33,7 +33,7 @@ const OrderForm = ({ formData, onChange }) => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 grid grid-cols-1 md:grid-cols-2 gap-4">
       <Input
         label="Full Name"
         name="name"

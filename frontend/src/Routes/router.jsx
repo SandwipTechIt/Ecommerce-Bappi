@@ -11,6 +11,7 @@ import Category from "../Pages/category";
 import About from "../Pages/about";
 import Privacy from "../Pages/privacy";
 import Contact from "../Pages/contact";
+import Thanks from "../Pages/thanks";
 
 export const router = createBrowserRouter([
   {
@@ -55,6 +56,10 @@ export const router = createBrowserRouter([
       {
         path: "privacy-policy",
         element: <Privacy />,
+      },
+      {
+        path: "thanks",
+        element: <Thanks />,
       },
       {
         path: "*",

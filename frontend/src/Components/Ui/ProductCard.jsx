@@ -1,21 +1,16 @@
-import { Link, useNavigate } from "react-router-dom";
-import soldoutImge from "/soldout.png";
+import { Link } from "react-router-dom";
 
 export default ({ product }) => {
-    const navigate = useNavigate(); // Initialize useNavigate hook
-
-    const handleBuyNowClick = (event) => {
-        event.stopPropagation(); // Stop the event from bubbling up to the Link
-        event.preventDefault(); // Prevent default behavior
-
-        navigate(`/order/${product.slug}`); // Navigate to the order page
-    };
-
     return (
         <div id="productCard" className="w-full lg:w-[240px]">
             <Link to={`/product/${product.slug}`} className="block h-full">
                 <div className="relative overflow-hidden rounded-lg shadow-xl hover:shadow-2xl transition-all duration-300 bg-white h-full flex flex-col">
-                    {product.status && (
+                    {!product.isStock && (
+                        <div className="absolute top-2 left-2 bg-[#e75c3a]/85 text-white text-xs font-semibold px-3 py-1 rounded-md z-1">
+                            Stock Out
+                        </div>
+                    )}
+                    {product.isStock && product.status && (
                         <div className="absolute top-2 left-2 bg-[#e75c3a]/85 text-white text-xs font-semibold px-3 py-1 rounded-md z-1">
                             {product.status}
                         </div>
@@ -28,13 +23,6 @@ export default ({ product }) => {
                             alt={product.name}
                             className="w-full h-full lg:w-[240px] md:h-[240px]  object-cover rounded-md"
                         />
-                        {!product.isStock && (
-                            <img
-                                src={soldoutImge}
-                                alt="Sold Out"
-                                className="absolute top-0 left-0 h-32 inset-0 m-auto object-cover"
-                            />
-                        )}
                     </div>
 
                     {/* Product Data */}
@@ -66,7 +54,6 @@ export default ({ product }) => {
                             </div>
                             <div className="flex justify-center flex-1">
                                 <button
-                                    onClick={handleBuyNowClick}
                                     disabled={!product.isStock}
                                     className="w-full bg-[#e75c3a] text-white font-semibold py-1 md:py-2 px-4 rounded-md flex items-center justify-center gap-2 transition-colors duration-200 disabled:bg-gray-400 disabled:text-gray-600 disabled:cursor-not-allowed"
                                 >

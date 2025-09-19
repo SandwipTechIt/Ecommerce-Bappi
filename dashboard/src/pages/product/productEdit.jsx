@@ -5,7 +5,6 @@ import TextAreaField from '../../components/product/TextAreaField';
 import SelectField from '../../components/product/SelectField';
 import ImageUpload from '../../components/product/ImageUpload';
 import VariantForm from '../../components/product/VariantForm';
-import ColorPicker from '../../components/product/ColorPicker';
 import ErrorMessage from '../../components/product/ErrorMessage';
 import { getApi, putApi } from '../../api';
 import { useParams } from 'react-router';
@@ -24,7 +23,6 @@ const ProductEdit = () => {
         discount: '',
         isStock: true,
         variants: [{ size: '', stock: true }],
-        colors: [],
         primaryImage: [],
         images: [],
         status: '',
@@ -142,13 +140,6 @@ const ProductEdit = () => {
         });
     };
 
-    // Handle color changes
-    const handleColorsChange = (colors) => {
-        setFormData({
-            ...formData,
-            colors
-        });
-    };
 
     // Validate form
     const validateForm = () => {
@@ -207,7 +198,6 @@ const ProductEdit = () => {
         data.append('isStock', formData.isStock);
         data.append('status', formData.status);
         data.append('variants', JSON.stringify(formData.variants));
-        data.append('colors', JSON.stringify(formData.colors));
         
         // Add images to delete
         if (imagesToDelete.length > 0) {
@@ -237,7 +227,6 @@ const ProductEdit = () => {
                     discount: '',
                     isStock: true,
                     variants: [{ size: '', stock: true }],
-                    colors: [],
                     primaryImage: [],
                     images: [],
                     status: '',
@@ -265,7 +254,6 @@ const ProductEdit = () => {
             discount: '',
             isStock: true,
             variants: [{ size: '', stock: true }],
-            colors: [],
             primaryImage: [],
             images: [],
             status: '',
@@ -292,7 +280,6 @@ const ProductEdit = () => {
                     status: product.status || '',
                     category: product.category || '',
                     variants: product.variants && product.variants.length > 0 ? product.variants : [{ size: '', stock: true }],
-                    colors: product.colors || [],
                     primaryImage: product.primaryImage ? [product.primaryImage] : [],
                     images: product.images || []
                 });
@@ -425,11 +412,6 @@ const ProductEdit = () => {
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-6">
-                            <ColorPicker
-                                selectedColors={formData.colors}
-                                onChange={handleColorsChange}
-                            />
-
                             <ImageUpload
                                 label="Primary Image"
                                 name="primaryImage"

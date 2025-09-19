@@ -78,11 +78,6 @@ const navItems: NavItem[] = [
     path: "/stocks",
   },
   {
-    name: "Slogan",
-    icon: "fas fa-bullhorn",
-    path: "/showSlogan",
-  },
-  {
     name: "Messages",
     icon: "fas fa-message",
     path: "/messages",

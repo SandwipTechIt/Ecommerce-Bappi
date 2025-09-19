@@ -5,32 +5,33 @@ const FeatureCard = ({ icon, title, description }) => (
                 {icon}
             </div>
             <h3 className="text-xl font-semibold">{title}</h3>
-            <p className="text-[#737373]">{description}</p>
+            <p className="text-[#737373] text-justify">{description}</p>
         </div>
     </div>
 );
 
 
-import {TruckIcon, UndoIcon, SvgIcon} from '../../constants/icons'
+import { TruckIcon, UndoIcon, SvgIcon } from '../../constants/icons'
 
 export default function FeaturesSection() {
     const features = [
         {
             icon: <TruckIcon className="w-9 h-9" fill="#e75c3a" />,
             title: "Fast Shipping",
-            description: "Get your items faster. We offer quick and reliable delivery on all orders"
+            description: "Experience swift and dependable delivery with every order. We prioritize speed so you can enjoy your purchase without the wait."
         },
         {
             icon: <UndoIcon className="w-9 h-9" fill="#e75c3a" />,
-            title: "Easy Returns",
-            description: "30-day return policy. Not satisfied? Return for a full refund."
+            title: "Easy Size Change",
+            description: "Not the right fit? No worries. Enjoy hassle-free size changes to ensure your perfect fit, every time."
         },
         {
             icon: <SvgIcon className="w-9 h-9" fill="#e75c3a" />,
-            title: "24/7 Support",
-            description: "Our customer service team is here to help you anytime."
+            title: "6 Month Outsole Warranty",
+            description: "We stand by the quality of our products. Enjoy peace of mind with a 6-month warranty on all outsoles, guaranteed."
         }
     ];
+    
 
     return (
         <section className="max-w-7xl mx-auto py-16 bg-background">

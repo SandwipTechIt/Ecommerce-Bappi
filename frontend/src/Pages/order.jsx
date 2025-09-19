@@ -61,11 +61,10 @@ const Alert = ({ type = 'error', message, isOpen, onClose }) => {
 
 
 import React, { useEffect, useState } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { getApi, postApi } from '../api';
 import OrderForm from '../Components/order/OrderForm';
 import ShippingChargeSelector from '../Components/order/courier';
-import OrderSummary from '../Components/order/OrderSummary';
 import CouponValidator from '../Components/order/coupon';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { WhatsAppIcon } from '../constants/icons';
@@ -74,9 +73,9 @@ const Order = () => {
     const { slug } = useParams();
     const { state } = useLocation();           // may contain { size, quantity }
     const { fire } = useFbEvent();
+    const navigate = useNavigate();
     /* ---------- local state ---------- */
     const [size, setSize] = useState(state?.size || '');
-    const [color, setColor] = useState(state?.color || '');
     const [selectedCourier, setSelectedCourier] = useState(null);
     const [appliedCoupon, setAppliedCoupon] = useState(null);
     const [quantity, setQuantity] = useState(state?.quantity || 1);
@@ -165,21 +164,12 @@ const Order = () => {
             });
             return;
         }
-        if (product.colors && product.colors.length > 0 && !color) {
-            setAlert({
-                isOpen: true,
-                type: 'error',
-                message: 'Please select a color',
-            });
-            return;
-        }
 
         try {
             const payload = {
                 ...formData,
                 productID: product._id,
                 size,
-                color,
                 quantity,
                 courier: selectedCourier ? {
                     id: selectedCourier._id,
@@ -215,11 +205,7 @@ const Order = () => {
             });
             setSelectedCourier(null);
             setAppliedCoupon(null);
-            setAlert({
-                isOpen: true,
-                type: 'success',
-                message: 'Order placed successfully!',
-            });
+            navigate('/thanks');
         } catch (err) {
             console.log(err);
             setAlert({
@@ -248,96 +234,150 @@ const Order = () => {
         <section className='heroBg'>
             <Alert type={alert.type} message={alert.message} isOpen={alert.isOpen} onClose={() => setAlert({ isOpen: false })} />
             <div className="bg-white/50 pb-4">
-                <div className="max-w-5xl mx-auto md:p-4 grid md:grid-cols-2 gap-8 ">
-                    <section className='order-2 px-4 md:order-1'>
-                        <h2 className="text-2xl font-bold mb-4 text-center md:text-left">Shipping Info</h2>
-                        <OrderForm formData={formData} onChange={setFormData} />
-                        <ShippingChargeSelector data={courier?.data} onSelect={handleCourierSelect} />
-                        <CouponValidator
-                            subtotal={subtotal}
-                            onCouponApply={handleCouponApply}
-                            appliedCoupon={appliedCoupon}
-                        />
-                        <div className="hidden md:block">
+                <div className="max-w-4xl mx-auto md:p-4">
+                    <div className="px-4 space-y-6">
+                        {/* Shipping Info Section */}
+                        <section>
+                            <h2 className="text-2xl font-bold mb-4 text-center md:text-left">Shipping Info</h2>
+                            <OrderForm formData={formData} onChange={setFormData} />
+                        </section>
+
+                        {/* Shipping Charge Section */}
+                        <section>
+                            <ShippingChargeSelector data={courier?.data} onSelect={handleCourierSelect} />
+                        </section>
+
+                        {/* Product Info Section */}
+                        <section className="mb-4">
+                            <h3 className="text-xl font-bold mb-4">Product Details</h3>
+                            <div className="border border-gray-400 rounded p-4">
+                                <div className="flex items-start gap-4">
+                                    <img
+                                        src={product.primaryImage}
+                                        alt={product.name}
+                                        className="w-20 h-20 object-cover rounded"
+                                    />
+                                    <div className="flex-1">
+                                        <h4 className="font-semibold text-lg">{product.name}</h4>
+                                        <div className="mt-2 space-y-1">
+                                            <p className="text-sm text-gray-600">
+                                                <span className="font-medium">Size:</span> {size}
+                                            </p>
+                                            <p className="text-sm text-gray-600">
+                                                <span className="font-medium">Quantity:</span> {quantity}
+                                            </p>
+                                            <p className="text-sm text-gray-600">
+                                                <span className="font-medium">Unit Price:</span> ৳{product.discount}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        {/* Coupon Section */}
+                        <section>
+                            <CouponValidator
+                                subtotal={subtotal}
+                                onCouponApply={handleCouponApply}
+                                appliedCoupon={appliedCoupon}
+                            />
+                        </section>
+
+                        {/* Order Summary Section */}
+                        <section>
+                            <h3 className="text-xl font-bold mb-4">Order Summary</h3>
+                            <div className="border border-gray-200 rounded p-4 space-y-2">
+                                <div className="flex justify-between text-sm">
+                                    <span>Subtotal ({quantity} items):</span>
+                                    <span>৳{subtotal}</span>
+                                </div>
+                                
+                                {shippingCost > 0 && (
+                                    <div className="flex justify-between text-sm">
+                                        <span>Shipping:</span>
+                                        <span>৳{shippingCost}</span>
+                                    </div>
+                                )}
+                                
+                                {discountAmount > 0 && (
+                                    <div className="flex justify-between text-sm text-green-600">
+                                        <span>Discount:</span>
+                                        <span>-৳{discountAmount}</span>
+                                    </div>
+                                )}
+                                
+                                <div className="border-t pt-2 flex justify-between text-xl font-bold">
+                                    <span>Total:</span>
+                                    <span>৳{totalCost}</span>
+                                </div>
+                            </div>
+                        </section>
+
+                        {/* Action Buttons Section */}
+                        <section className="hidden md:block">
                             {
                                 product.isStock
                                     ? (
-                                        <>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                                             <button
                                                 onClick={handlePlaceOrder}
-                                                className="w-full mt-6 font-semibold order-1 md:order-2 bg-[#e75c3a] text-white py-2 rounded  transition disabled:opacity-50"
+                                                className="w-full font-semibold bg-[#e75c3a] text-white py-3 rounded transition disabled:opacity-50"
                                             >
                                                 Confirm Order
                                             </button>
                                             <button
                                                 onClick={handleWhatsApp}
-                                                className="w-full mt-2 font-semibold order-1 md:order-2 bg-[#25D366] text-white py-2 rounded  transition disabled:opacity-50 flex gap-2 items-center justify-center"
+                                                className="w-full font-semibold bg-[#25D366] text-white py-3 rounded transition disabled:opacity-50 flex gap-2 items-center justify-center"
                                             >
                                                 <WhatsAppIcon className="w-6 h-6" fill="white" />
                                                 WhatsApp
                                             </button>
-                                        </>
+                                        </div>
                                     )
                                     : (
                                         <button
                                             disabled
-                                            className="w-full mt-6 flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-gray-500 cursor-not-allowed"
+                                            className="w-full flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-gray-500 cursor-not-allowed"
                                         >
                                             Out of Stock
                                         </button>
                                     )
                             }
-                        </div>
+                        </section>
+
+                        {/* Mobile Fixed Buttons */}
                         <div className="fixed container bg-gray-100 !px-4 !pb-4 bottom-0 left-0 w-full md:hidden z-999999999">
                             {
                                 product.isStock
                                     ? (
-                                        <>
+                                        <div className="space-y-2">
                                             <button
                                                 onClick={handlePlaceOrder}
-                                                className="w-full mt-6 font-semibold order-1 md:order-2 bg-[#e75c3a] text-white py-2 rounded  transition disabled:opacity-50"
+                                                className="w-full font-semibold bg-[#e75c3a] text-white py-3 rounded transition disabled:opacity-50"
                                             >
                                                 Confirm Order
                                             </button>
                                             <button
                                                 onClick={handleWhatsApp}
-                                                className="w-full mt-2 font-semibold order-1 md:order-2 bg-[#25D366] text-white py-2 rounded  transition disabled:opacity-50 flex gap-2 items-center justify-center"
+                                                className="w-full font-semibold bg-[#25D366] text-white py-3 rounded transition disabled:opacity-50 flex gap-2 items-center justify-center"
                                             >
                                                 <WhatsAppIcon className="w-6 h-6" fill="white" />
                                                 WhatsApp
                                             </button>
-                                        </>
+                                        </div>
                                     )
                                     : (
                                         <button
                                             disabled
-                                            className="w-full mt-6 flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-gray-500 cursor-not-allowed"
+                                            className="w-full flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-gray-500 cursor-not-allowed"
                                         >
                                             Out of Stock
                                         </button>
                                     )
                             }
                         </div>
-                    </section>
-
-                    <section className='order-1 md:order-2 grid grid-cols-1'>
-                        <div className="order-2 md:order-1 mt-2 md:mt-0">
-                            <h2 className="text-2xl font-bold md:mb-4 text-center md:text-left">Order Summary</h2>
-                            <OrderSummary
-                                product={product}
-                                size={size}
-                                color={color}
-                                quantity={quantity}
-                                setSize={setSize}
-                                setColor={setColor}
-                                setQuantity={setQuantity}
-                                subtotal={subtotal}
-                                shippingCost={shippingCost}
-                                discountAmount={discountAmount}
-                                totalCost={totalCost}
-                            />
-                        </div>
-                    </section>
+                    </div>
                 </div>
             </div>
         </section>

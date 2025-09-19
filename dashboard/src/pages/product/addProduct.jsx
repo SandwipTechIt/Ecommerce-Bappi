@@ -5,7 +5,6 @@ import TextAreaField from '../../components/product/TextAreaField';
 import SelectField from '../../components/product/SelectField';
 import ImageUpload from '../../components/product/ImageUpload';
 import VariantForm from '../../components/product/VariantForm';
-import ColorPicker from '../../components/product/ColorPicker';
 import ErrorMessage from '../../components/product/ErrorMessage';
 import { getApi, postApi } from '../../api';
 import { useQuery } from '@tanstack/react-query';
@@ -22,7 +21,6 @@ const CreateProduct = () => {
         isStock: true,
         category: '',
         variants: [{ size: '', stock: true }],
-        colors: [],
         primaryImage: [],
         images: [],
         status: ''
@@ -104,13 +102,6 @@ const CreateProduct = () => {
         });
     };
 
-    // Handle color changes
-    const handleColorsChange = (colors) => {
-        setFormData({
-            ...formData,
-            colors
-        });
-    };
 
     const handleAddVariant = () => {
         setFormData({
@@ -166,9 +157,6 @@ const CreateProduct = () => {
         if (variantErrors.some(error => Object.keys(error).length > 0)) {
             newErrors.variants = variantErrors;
         }
-        if (!formData.colors.length) {
-            newErrors.colors = 'Colors is required';
-        }
         if (!formData.category.trim()) {
             newErrors.category = 'Category is required';
         }
@@ -194,7 +182,6 @@ const CreateProduct = () => {
         data.append('isStock', formData.isStock);
         data.append('status', formData.status);
         data.append('variants', JSON.stringify(formData.variants));
-        data.append('colors', JSON.stringify(formData.colors));
         if (formData.primaryImage.length > 0) {
             data.append('primaryImage', formData.primaryImage[0]);
         }
@@ -212,7 +199,6 @@ const CreateProduct = () => {
                     isStock: true,
                     category: '',
                     variants: [{ size: '', stock: true }],
-                    colors: [],
                     primaryImage: [],
                     images: [],
                     status: ''
@@ -238,7 +224,6 @@ const CreateProduct = () => {
             isStock: true,
             category: '',
             variants: [{ size: '', stock: true }],
-            colors: [],
             primaryImage: [],
             images: [],
             status: ''
@@ -349,7 +334,9 @@ const CreateProduct = () => {
                             </div> */}
                         </div>
 
-                        <div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 col-span-1 md:col-span-2 md:gap-6">
+                        <div className='w-full'>
                             <VariantForm
                                 variants={formData.variants}
                                 onChange={handleVariantsChange}
@@ -358,13 +345,6 @@ const CreateProduct = () => {
                                 error={errors.variants}
                             />
                         </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 col-span-1 md:col-span-2 md:gap-6">
-                            <ColorPicker
-                                selectedColors={formData.colors}
-                                onChange={handleColorsChange}
-                                error={errors.colors}
-                            />
                             <ImageUpload
                                 label="Primary Image"
                                 name="primaryImage"

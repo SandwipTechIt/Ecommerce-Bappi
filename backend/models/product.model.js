@@ -15,9 +15,6 @@ const ProductSchema = new mongoose.Schema({
         size: Number,
         stock: { type: Boolean, default: true }
     }],
-    colors: [{
-        type: String,
-    }],
     primaryImage: {
         type: String,
         required: true,
