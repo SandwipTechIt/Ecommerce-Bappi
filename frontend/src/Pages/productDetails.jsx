@@ -90,15 +90,18 @@ const ProductInfo = ({ product }) => {
   );
 };
 
-// ProductDescription Component
-const ProductDescription = ({ description }) => {
-  return (
-    <div className="mt-6">
-      <h3 className="text-lg font-medium text-gray-900">Description</h3>
-      <p className="mt-2 text-gray-600">{description}</p>
-    </div>
-  );
-};
+// ProductDescription.jsx
+const ProductDescription = ({ description }) => (
+  console.log(description),
+  <div className="mt-6">
+    <h3 className="text-lg font-medium text-gray-900">Description</h3>
+    <p
+      className="mt-2 text-gray-600 !whitespace-pre-line"
+    >
+      {description}
+    </p>
+  </div>
+);
 
 // SizeSelector Component
 const SizeSelector = ({ variants, selectedSize, handleSizeSelect }) => {

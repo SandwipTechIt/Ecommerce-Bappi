@@ -112,6 +112,7 @@ export const OrderTable = ({ orders, onDeleteOrder }) => {
             <th className="bg-[#721c24] p-4 text-left text-white">Number</th>
             <th className="bg-[#721c24] p-4 text-left text-white">Address</th>
             <th className="bg-[#721c24] p-4 text-left text-white">Quantity</th>
+            <th className="bg-[#721c24] p-4 text-left text-white">Size</th>
             <th className="bg-[#721c24] p-4 text-left text-white">Status</th>
             <th className="w-[150px] bg-[#721c24] p-4 text-left text-white">
               Date
@@ -164,6 +165,12 @@ export const OrderTable = ({ orders, onDeleteOrder }) => {
                   Quantity
                 </span>
                 {order.quantity}
+              </td>
+              <td className="flex items-center justify-between border-b border-gray-200 p-2 text-right md:table-cell md:p-4 md:text-left">
+                <span className="mr-4 font-semibold text-gray-700 md:hidden dark:text-white">
+                  Size
+                </span>
+                {order?.size}
               </td>
               <td className="flex items-center justify-between border-b border-gray-200 p-2 text-right md:table-cell md:p-4 md:text-left">
                 <span className="mr-4 font-semibold text-gray-700 md:hidden dark:text-white">

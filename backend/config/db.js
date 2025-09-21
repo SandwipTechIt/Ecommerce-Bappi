@@ -1,5 +1,5 @@
-const URL = "mongodb://localhost:27017/Ecommerce";
-// const URL = "mongodb://mdshahid:MDshahid7384%40@163.227.239.104:27017/EcommerceEcommerce?authSource=admin"; // for VPS
+//const URL = "mongodb://localhost:27017/Ecommerce";
+const URL = "mongodb://mdshahid:MDshahid7384%40@163.227.239.104:27017/EcommerceEcommerce?authSource=admin"; // for VPS
 import mongoose from "mongoose";
 
 const connectDB = async () => {

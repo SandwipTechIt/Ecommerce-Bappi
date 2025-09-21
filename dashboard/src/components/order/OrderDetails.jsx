@@ -16,6 +16,7 @@ function InvoiceDesign55x85({
   courierFee = 0,
   subTotal = 0,
   couponDiscount = 0,
+  size = "",
 }) {
 
   const fmt = (n) => {
@@ -26,7 +27,7 @@ function InvoiceDesign55x85({
 
   return (
     <div
-      className="relative bg-white text-gray-900 shadow overflow-hidden"
+      className="relative bg-white text-gray-900 shadow"
       style={{
         width: "8.5in",
         height: "5.5in",
@@ -38,6 +39,23 @@ function InvoiceDesign55x85({
       <div className="h-full px-10 pt-8 pb-24">
         {/* Header */}
         <div className="flex items-start justify-between">
+          <div className="flex flex-col ">
+            <div className="text-right">
+              <img className="w-48" src="/invoiceLogo.jpg" alt="" />
+            </div>
+            {/* Bill To */}
+            <div className="mt-3">
+              <div className="uppercase text-xs tracking-widest text-gray-500 font-semibold">
+                INVOICE TO
+              </div>
+              <div className="mt-2 text-sm space-y-1">
+                <div className="text-gray-800"> <span>Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</span>  {name || ""}</div>
+                <div className="text-gray-600"> <span>Address&nbsp;:</span> {address || ""}</div>
+                <div className="text-gray-600"> <span>Mobile&nbsp;&nbsp;&nbsp;&nbsp;:</span> {mobile || ""}</div>
+              </div>
+            </div>
+          </div>
+
           <div>
             <h1 className="text-[28px] font-extrabold tracking-[0.2em] leading-none">
               INVOICE
@@ -55,22 +73,6 @@ function InvoiceDesign55x85({
             </div>
           </div>
 
-          <div className="flex flex-col -m-2">
-            <div className="text-right">
-              <img className="w-48" src="/invoiceLogo.jpg" alt="" />
-            </div>
-            {/* Bill To */}
-            <div className="mt-3">
-              <div className="uppercase text-xs tracking-widest text-gray-500 font-semibold">
-                INVOICE TO
-              </div>
-              <div className="mt-2 text-sm space-y-1">
-                <div className="text-gray-800"> <span>Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</span>  {name || ""}</div>
-                <div className="text-gray-600"> <span>Address&nbsp;:</span> {address || ""}</div>
-                <div className="text-gray-600"> <span>Mobile&nbsp;&nbsp;&nbsp;&nbsp;:</span> {mobile || ""}</div>
-              </div>
-            </div>
-          </div>
         </div>
 
 
@@ -121,6 +123,21 @@ function InvoiceDesign55x85({
               className="grid grid-cols-12 text-sm text-gray-800 border-t border-gray-200 first:border-t-0"
             >
               <div className="col-span-6 px-4 py-3">
+                Size
+              </div>
+              <div className="col-span-2 px-4 py-3 text-right">
+              </div>
+              <div className="col-span-2 px-4 py-3 text-right">
+              </div>
+              <div className="col-span-2 px-4 py-3 text-right">
+                {size}
+              </div>
+            </div>
+
+            <div
+              className="grid grid-cols-12 text-sm text-gray-800 border-t border-gray-200 first:border-t-0"
+            >
+              <div className="col-span-6 px-4 py-3">
                 Courier Fee
               </div>
               <div className="col-span-2 px-4 py-3 text-right">
@@ -132,7 +149,9 @@ function InvoiceDesign55x85({
               </div>
             </div>
 
-            { couponDiscount > 0 &&
+
+
+            {couponDiscount > 0 &&
               <div
                 className="grid grid-cols-12 text-sm text-gray-800 border-t border-gray-200 first:border-t-0"
               >
@@ -278,6 +297,10 @@ export default function OrderDetails({ order }) {
             <hr className="my-3 border-gray-200 dark:border-gray-600" />
 
             <div className="flex justify-between">
+              <span className="font-medium">Size:</span>
+              <span>{order.size}</span>
+            </div>
+            <div className="flex justify-between">
               <span className="font-medium">Quantity:</span>
               <span>{order.quantity}</span>
             </div>
@@ -361,7 +384,7 @@ export default function OrderDetails({ order }) {
 
             <div className="hidden">
               <div ref={contentRef}>
-                <InvoiceDesign55x85 invoiceNo={order._id} name={order.name} address={order.address} mobile={order.number} items={[{ description: order?.productID?.name, qty: order?.quantity, price: order?.productID?.discount }]} courierFee={order.courier?.fee} subTotal={order.totalAmount} couponDiscount={order.coupon?.discountAmount} />
+                <InvoiceDesign55x85 invoiceNo={order._id} name={order.name} address={order.address} mobile={order.number} items={[{ description: order?.productID?.name, qty: order?.quantity, price: order?.productID?.discount }]} courierFee={order.courier?.fee} subTotal={order.totalAmount} couponDiscount={order.coupon?.discountAmount} size={order?.size} />
               </div>
             </div>
 
