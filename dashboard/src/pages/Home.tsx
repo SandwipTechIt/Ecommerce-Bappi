@@ -27,6 +27,7 @@ export default function Home() {
         cancelledOrders={data?.cancelledOrders}
         lifetimeOrder={data?.lifetimeOrder}
         lifetimeRevenue={data?.lifetimeRevenue}
+        todayOrders={data?.todayOrders}
       />
     </div>
   );

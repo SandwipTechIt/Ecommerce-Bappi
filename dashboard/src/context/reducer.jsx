@@ -28,7 +28,13 @@ const Reducer = (State, Action) => {
                 error: false,
                 islogin: false
             }
-
+        case "authfail":
+            return {
+                admin: null,
+                isFeatching: false,
+                error: false,
+                islogin: false
+            };
         default:
             return State;
     }

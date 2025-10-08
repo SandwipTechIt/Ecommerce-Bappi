@@ -1,6 +1,49 @@
 import ProductModel from "../models/product.model.js";
 import OrderModel from "../models/order.model.js";
 import Statics from "../models/statics.model.js";
+
+
+async function getTodaysOrderCount() {
+  try {
+    const today = new Date();
+    const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0);
+    const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 999);
+
+    const count = await OrderModel.countDocuments({
+      createdAt: { $gte: startOfDay, $lte: endOfDay }
+    });
+
+    return count;
+  } catch (error) {
+    console.error('Error fetching today\'s order count:', error);
+    throw error; // Or handle as needed
+  }
+}
+
+
+const getTotalCompletedOrdersSubtotal = async () => {
+  try {
+    const result = await OrderModel.aggregate([
+      {
+        $match: {
+          status: "completed"
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalSubtotal: { $sum: "$subtotal" }
+        }
+      }
+    ]);
+    return result.length > 0 ? result[0].totalSubtotal : 0;
+  } catch (error) {
+    console.error('Error calculating total subtotal:', error);
+    throw error;
+  }
+};
+
+
 export const getStaticData = async (req, res) => {
   try {
     const totalProducts = await ProductModel.countDocuments();
@@ -81,16 +124,30 @@ export const getStaticData = async (req, res) => {
       currentDate.setMonth(currentDate.getMonth() + 1);
     }
 
+
     res.json({
       totalProducts,
       totalOrders,
       pendingOrders,
       completedOrders,
       cancelledOrders,
+      todayOrders: await getTodaysOrderCount(),
       lifetimeOrder: statics?.order || 0,
-      lifetimeRevenue: statics?.amount || 0,
+      lifetimeRevenue: await getTotalCompletedOrdersSubtotal(),
       monthlyOrders: result,
     });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch static data" });
+  }
+};
+
+
+
+export const getAllStatics = async (req, res) => {
+  try {
+    const statics = await Statics.find();
+    res.json(statics);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Failed to fetch static data" });

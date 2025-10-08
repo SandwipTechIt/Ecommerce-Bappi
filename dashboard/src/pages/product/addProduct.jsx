@@ -170,7 +170,6 @@ const CreateProduct = () => {
         if (!validateForm()) {
             return;
         }
-        console.log(formData);
 
         setIsSubmitting(true);
         const data = new FormData();
@@ -242,7 +241,6 @@ const CreateProduct = () => {
     }
 
 
-    console.log(formData);
     return (
         <div className="min-h-screen py-8">
             <div className="mx-auto px-4 sm:px-6 lg:px-8">

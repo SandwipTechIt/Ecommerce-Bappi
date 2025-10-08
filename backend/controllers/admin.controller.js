@@ -1,5 +1,4 @@
 import Admin from "../models/admin.model.js";
-import jwt from "jsonwebtoken";
 
 export const createAdmin = async (req, res) => {
     try {
@@ -28,7 +27,7 @@ export const loginAdmin = async (req, res) => {
         //     maxAge: 60 * 60 * 1000
         // });
         res.status(200).json(admin);
-       
+
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -52,3 +51,24 @@ export const updateAdmin = async (req, res) => {
     }
 };
 
+
+export const authAdmin = async (req, res) => {
+    try {
+        const { name, password } = req.body;
+
+        if (!name || !password) {
+            return res.status(400).json({ error: "Name and password are required" });
+        }
+
+        const admin = await Admin.findOne({ name });
+        if (!admin) {
+            return res.status(404).json({ error: "Admin not found" });
+        }
+        if (admin.password !== password) {
+            return res.status(401).json({ error: "Invalid password" });
+        }
+        res.status(200).json({ message: "Authenticated" });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};

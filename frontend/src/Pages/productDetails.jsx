@@ -18,7 +18,7 @@ const ProductImages = ({ product, selectedImage, setSelectedImage }) => {
   return (
     <div className="md:w-1/2 p-2 md:p-4 lg:p-6 ">
       {/* Main image */}
-      <div className="relative md:w-[500px] md:h-[500px] w-full h-[400px] rounded-lg overflow-hidden aspect-w-1 aspect-h-1">
+      <div className="relative md:w-[500px] md:h-[500px] w-full h-auto rounded-lg overflow-hidden aspect-w-1 aspect-h-1">
         <img
           src={selectedImage || product.primaryImage || product.images?.[0] || '/placeholder.png'}
           alt={product.name || 'Product'}
@@ -92,7 +92,6 @@ const ProductInfo = ({ product }) => {
 
 // ProductDescription.jsx
 const ProductDescription = ({ description }) => (
-  console.log(description),
   <div className="mt-6">
     <h3 className="text-lg font-medium text-gray-900">Description</h3>
     <p

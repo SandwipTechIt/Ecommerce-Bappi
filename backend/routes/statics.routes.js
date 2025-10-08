@@ -1,8 +1,9 @@
 import express from "express";
-import { getStaticData } from "../controllers/statics.controller.js";
+import { getStaticData,getAllStatics } from "../controllers/statics.controller.js";
 
 const router = express.Router();
 
 router.get("/getStaticData", getStaticData);
+router.get("/getAllStatics", getAllStatics);
 
 export default router;

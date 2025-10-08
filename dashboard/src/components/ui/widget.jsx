@@ -9,7 +9,9 @@ const Widget = ({
   cancelledOrders,
   lifetimeOrder,
   lifetimeRevenue,
+  todayOrders
 }) => {
+  console.log(todayOrders);
   const widgets = [
     {
       type: "totalProducts",
@@ -34,8 +36,8 @@ const Widget = ({
     {
       type: "pendingOrders",
       title: "Pending Orders",
-      to: "orders",
-      link: "View all orders",
+      to: "orders/pending",
+      link: "View pending orders",
       icon: "fa-clock",
       bgColor: "bg-yellow-500",
       iconColor: "text-yellow-500",
@@ -44,8 +46,8 @@ const Widget = ({
     {
       type: "completedOrders",
       title: "Completed Orders",
-      to: "orders",
-      link: "View all orders",
+      to: "orders/completed",
+      link: "View completed orders",
       icon: "fa-check",
       bgColor: "bg-sky-600",
       iconColor: "text-sky-600",
@@ -54,8 +56,8 @@ const Widget = ({
     {
       type: "cancelOrders",
       title: "Canceled Orders",
-      to: "orders",
-      link: "View all orders",
+      to: "orders/cancelled",
+      link: "View cancelled orders",
       icon: "fa-check",
       bgColor: "bg-red-600",
       iconColor: "text-red-600",
@@ -72,14 +74,14 @@ const Widget = ({
       value: lifetimeRevenue,
     },
     {
-      type: "lifetimeOrder",
-      title: "Total Product Order",
-      to: "orders",
-      link: "View all orders",
+      type: "todayOrders",
+      title: "Today's Orders",
+      to: "",
+      link: "",
       icon: "fa-dolly",
       bgColor: "bg-emerald-600",
       iconColor: "text-emerald-600",
-      value: lifetimeOrder,
+      value: todayOrders,
     },
   ];
 

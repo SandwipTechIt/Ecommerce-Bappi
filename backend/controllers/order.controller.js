@@ -92,12 +92,11 @@ export const getOrder = async (req, res) => {
   }
 };
 
-
 export const getOrderByStatus = async (req, res) => {
   const { status } = req.params;
 
   try {
-    const orders = await Order.find({status}).sort({ createdAt: -1 }).populate({
+    const orders = await Order.find({ status }).sort({ createdAt: -1 }).populate({
       path: "productID",
       select: "primaryImage",
     });
@@ -112,9 +111,6 @@ export const getOrderByStatus = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
-
-
 
 export const updateOrder = async (req, res) => {
   try {
@@ -147,26 +143,26 @@ export const updateOrder = async (req, res) => {
         }
       );
     }
-    if (order?.status === "cancelled") {
-      await Transaction.create({
-        title: order.productID.name + " " + order.status,
-        amount: order.totalAmount,
-        type: "expense",
-      });
-      await Statics.findOneAndUpdate(
-        {},
-        {
-          $inc: {
-            amount: -order.totalAmount,
-            order: -order.quantity,
-          },
-        },
-        {
-          upsert: true,
-          new: true,
-        }
-      );
-    }
+    // if (order?.status === "cancelled") {
+    //   await Transaction.create({
+    //     title: order.productID.name + " " + order.status,
+    //     amount: order.totalAmount,
+    //     type: "expense",
+    //   });
+    //   await Statics.findOneAndUpdate(
+    //     {},
+    //     {
+    //       $inc: {
+    //         amount: -order.totalAmount,
+    //         order: -order.quantity,
+    //       },
+    //     },
+    //     {
+    //       upsert: true,
+    //       new: true,
+    //     }
+    //   );
+    // }
     res.status(200).json(order);
   } catch (error) {
     console.log(error);

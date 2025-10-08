@@ -15,7 +15,7 @@ const MobileNav = ({ activeStyle, toggleMenu }) => {
     <div className='fixed inset-0 bg-white z-50 md:hidden'>
       <div className='flex justify-between items-center h-[70px] px-4 border-b' onClick={toggleMenu}>
         <NavLink to='/' className='font-bold text-2xl'>
-          Com<span className='text-[#E74C3C]'>fortY</span>
+          <img src={"/logo.jpg"} alt="" className='h-8' />
         </NavLink>
         <button onClick={toggleMenu}>
           <CrossIcon className='w-6 h-6' fill='black' />
@@ -40,20 +40,20 @@ const MobileNav = ({ activeStyle, toggleMenu }) => {
             <li className='px-4 py-2 flexjustify-center gap-2' onClick={toggleMenu}>
               <h2 className='text-lg font-semibold mb-2'>Follow Us</h2>
               <div className='flex gap-2'>
-               <a href="https://www.facebook.com/comfortyzone" target="_blank" rel="noopener noreferrer">
-                <FacebookIcon url="facebook.com" target="_blank" className='w-10 flex items-center justify-center rounded-full' fill='#1877F2'/>                 
-               </a>
-               <a href="https://wa.me/8801560044236" target="_blank" rel="noopener noreferrer">
-                <WhatsAppIcon url="whatsapp.com" target="_blank" className='w-10 flex items-center justify-center rounded-full' fill='#25D366'/>                 
-               </a>
+                <a href="https://www.facebook.com/comfortyzone" target="_blank" rel="noopener noreferrer">
+                  <FacebookIcon url="facebook.com" target="_blank" className='w-10 flex items-center justify-center rounded-full' fill='#1877F2' />
+                </a>
+                <a href="https://wa.me/8801560044236" target="_blank" rel="noopener noreferrer">
+                  <WhatsAppIcon url="whatsapp.com" target="_blank" className='w-10 flex items-center justify-center rounded-full' fill='#25D366' />
+                </a>
 
-               <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer">
-                <InstagramIcon url="instagram.com" target="_blank" className='w-10 flex items-center justify-center rounded-full' fill='#E4405F'/>                 
-               </a>
+                <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer">
+                  <InstagramIcon url="instagram.com" target="_blank" className='w-10 flex items-center justify-center rounded-full' fill='#E4405F' />
+                </a>
 
-               <a href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer">
-                <TiktokIcon url="tiktok.com" target="_blank" className='w-10 flex items-center justify-center rounded-full' fill='#000000'/>                 
-               </a>
+                <a href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer">
+                  <TiktokIcon url="tiktok.com" target="_blank" className='w-10 flex items-center justify-center rounded-full' fill='#000000' />
+                </a>
 
               </div>
             </li>

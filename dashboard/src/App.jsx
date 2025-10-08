@@ -38,7 +38,6 @@ import EditMessage from "./pages/message/editMessage";
 import AddReview from "./pages/review/addReview";
 import ShowAllReview from "./pages/review/showAllReview";
 
-import ShowSlogan from "./pages/slogan/showSlogan";
 
 export default function App() {
   const { state } = setContext();
@@ -72,7 +71,6 @@ export default function App() {
                 <Route path="/courier" element={<Courier />} />
                 <Route path="/messages" element={<ShowAllMessage />} />
                 <Route path="/replyMessage/:id" element={<EditMessage />} />
-                <Route path="/showSlogan" element={<ShowSlogan />} />
                 <Route path="/addReview" element={<AddReview />} />
                 <Route path="/allReview" element={<ShowAllReview />} />
               </Route>

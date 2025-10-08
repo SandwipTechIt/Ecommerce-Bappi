@@ -37,10 +37,10 @@ const SearchNav = ({ toggleSearch }) => {
       <div className='bg-white md:w-[400px] md:ml-auto h-screen'>
         <div className='flex justify-between items-center h-[70px] px-4 border-b' onClick={toggleSearch}>
           <NavLink to='/' className='font-bold text-2xl'>
-            Com<span className='text-[#E74C3C]'>fortY</span>
+          <img src={"/logo.jpg"} alt="" className='h-8 md:hidden' />
           </NavLink>
           <button onClick={toggleSearch}>
-            <CrossIcon className='w-8 h-8' fill='black' />
+            <CrossIcon className='w-6 h-6' fill='black' />
           </button>
         </div>
         <div className='p-4 bg-white h-[calc(100vh-70px)]'>
@@ -60,13 +60,16 @@ const SearchNav = ({ toggleSearch }) => {
               <ul className='pb-20'>
                 {filteredProducts?.map((product) => (
                   <li key={product.id} className='py-2 border-b' onClick={toggleSearch} >
-                    <Link to={`/product/${product.slug}`} className='flex items-center gap-4'>
-                      <div className="img">
-                        <img src={product.primaryImage} alt={product.name} className='w-14 h-14 object-cover' />
+                    <Link to={`/product/${product.slug}`} className='flex gap-4'>
+                      <div className="w-18 h-18 ">
+                        <img src={product.primaryImage} alt={product.name} className='img w-full h-full rounded-sm' />
                       </div>
-                      <div className="data flex flex-col ">
-                        <span className='text-lg font-medium'>{product.name}</span>
-                        <span className='text-gray-500'>{product.price}</span>
+                      <div className="data flex flex-1 flex-col">
+                        <p className='text-lg font-medium line-clamp-2'>{product.name}</p>
+                        <div className='flex gap-2'>
+                          <del className='text-gray-500'>{product.price}</del>
+                          <span className='text-[#E74C3C]'>{product.discount}</span>
+                        </div>
                       </div>
                     </Link>
                   </li>
